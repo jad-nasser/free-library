@@ -48,7 +48,7 @@ This project provides a free library website that contains PDF books. The public
 - **React Testing Library**: used for unit testing.
 - **Mock Service Worker**: used to mock server responses in unit testing.
 - **Cypress**: used for e2e testing.
-- **cypress-file-upload**: used to upload sunglasses item images for cypress e2e testing.
+- **cypress-file-upload**: used to upload books PDF files for cypress e2e testing.
 - **Font Awesome**: used to apply some icons to some buttons.
 
 <br>
