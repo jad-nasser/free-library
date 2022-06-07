@@ -130,7 +130,7 @@ Books are PDF files stored in the server and when the user sign in as publisher,
     - **users.test.js**
     - **books.test.js**
 - **app.js**: its the main router that the server run and it includes all the two routers mentioned above.
-- **db_connections.js**: used by the server to connect to a database.
+- **connect-to-db.js**: used by the server to connect to a database.
 - **server.js**: the server file itself.
 - **client**: contains the client side code.
   - **cypress**: contains e2e tests.
