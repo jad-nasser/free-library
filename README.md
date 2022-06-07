@@ -110,24 +110,22 @@ Books are PDF files stored in the server and when the user sign in as publisher,
 
 **Note**: Most client side components represented in this documentation by the parent folder that includes them not by their .js file name.
 
-- **models**: contains database models.
-  - **books.js**: database model for book items.
-  - **user.js**: database model for users.
+- **models.sql**: contains queries that needed to be executed only one time in the sql server database to create Publishers and Books database models.
 - **routers**: contains routers that are responsible for the CRUD operations in the database models.
   - **books.js**
-  - **users.js**
-- **controllers**: contains controllers for books and users routers.
+  - **publishers.js**
+- **controllers**: contains controllers for books and publishers routers.
   - **books.js**: controller for books router.
-  - **users.js**: controller for users router.
+  - **publishers.js**: controller for publishers router.
 - **database-controllers**: these database controllers are used by the controllers above and they are used to communicate with the database models.
   - **books.js**: controller for books database model.
-  - **users.js**: controller for users database model.
+  - **publishers.js**: controller for publishers database model.
 - **test**: contains unit and integration tests for the server side code.
   - **unit-tests**: contains all unit testing code for the server side.
-    - **users.test.js**
+    - **publishers.test.js**
     - **books.test.js**
   - **integration-tests**: contains all the integration testing code for the server side.
-    - **users.test.js**
+    - **publishers.test.js**
     - **books.test.js**
 - **app.js**: its the main router that the server run and it includes all the two routers mentioned above.
 - **connect-to-db.js**: used by the server to connect to a database.

@@ -1,7 +1,16 @@
--- creating a role called database_access and this role will contain all the access permissions on this database
-CREATE ROLE database_access
-GRANT SELECT, UPDATE, INSERT, DELETE ON SCHEMA :: [dbo] TO database_access
--- creating a user called server_app with its login and then granting this user the created role above
-CREATE LOGIN server_login WITH PASSWORD= '1234'
-CREATE USER server_app FOR LOGIN server_login
-ALTER ROLE database_access ADD MEMBER server_app
+-- creating the Publishers table model
+CREATE TABLE Publishers (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	first_name NVARCHAR(50) NOT NULL,
+	last_name NVARCHAR(50) NOT NULL,
+	email NVARCHAR(50) UNIQUE NOT NULL,
+	account_password NVARCHAR(50) NOT NULL,
+)
+-- creating the Books table model
+CREATE TABLE Books (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	book_name NVARCHAR(50) NOT NULL,
+	author NVARCHAR(50) NOT NULL,
+	file_path NVARCHAR(100) NOT NULL,
+	publisher_id INT FOREIGN KEY REFERENCES Publishers(id) NOT NULL,
+)
