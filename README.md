@@ -110,7 +110,6 @@ Books are PDF files stored in the server and when the user sign in as publisher,
 
 **Note**: Most client side components represented in this documentation by the parent folder that includes them not by their .js file name.
 
-- **models.sql**: contains queries that needed to be executed only one time in the sql server database to create Publishers and Books database models.
 - **routers**: contains routers that are responsible for the CRUD operations in the database models.
   - **books.js**
   - **publishers.js**
@@ -128,7 +127,7 @@ Books are PDF files stored in the server and when the user sign in as publisher,
     - **publishers.test.js**
     - **books.test.js**
 - **app.js**: its the main router that the server run and it includes all the two routers mentioned above.
-- **connect-to-db.js**: used by the server to connect to a database.
+- **connect-to-db.js**: used by the server to connect to a database and if the database models are not created yet then this file will create the database models in the database.
 - **server.js**: the server file itself.
 - **client**: contains the client side code.
   - **cypress**: contains e2e tests.
