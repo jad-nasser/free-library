@@ -1,6 +1,7 @@
 const mssql = require("mssql/msnodesqlv8");
 
-//connect to a database
+//this method is to connect to a database and also it creates the database models in the database if they are
+//not exist yet
 function connect(dbName) {
   mssql.on("error", (err) => {
     console.log(err);

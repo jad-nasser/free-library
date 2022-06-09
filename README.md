@@ -119,7 +119,7 @@ Books are PDF files stored in the server and when the user sign in as publisher,
 - **database-controllers**: these database controllers are used by the controllers above and they are used to communicate with the database models.
   - **books.js**: controller for books database model.
   - **publishers.js**: controller for publishers database model.
-- **test**: contains unit and integration tests for the server side code.
+- **tests**: contains unit and integration tests for the server side code.
   - **unit-tests**: contains all unit testing code for the server side.
     - **publishers.test.js**
     - **books.test.js**
