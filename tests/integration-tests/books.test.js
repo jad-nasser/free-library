@@ -1,0 +1,196 @@
+//importing modules
+const app = require("../../app");
+const connectToDB = require("../../connect-to-db");
+const publishersDBController = require("../../database-controllers/publishers");
+const booksDBController = require("../../database-controllers/books");
+const request = require("supertest");
+const { expect } = require("chai");
+
+//test data
+let publisher = {
+  first_name: "test",
+  last_name: "test",
+  email: "testtest@email.com",
+  account_password: "Q1!asdfg",
+};
+let book = {
+  book_name: "test",
+  author: "test",
+  file_path: "test.pdf",
+};
+let book2 = {
+  book_name: "test2",
+  author: "test2",
+  file_path: "test2.pdf",
+};
+
+//connecting to the database
+const connection = connectToDB("free-library-test");
+
+after(function (done) {
+  connection
+    .close()
+    .then(function () {
+      done();
+    })
+    .catch((err) => done(err));
+});
+afterEach(function (done) {
+  publishersDBController
+    .clearTable()
+    .then(function () {
+      return booksDBController.clearTable();
+    })
+    .then(function () {
+      done();
+    })
+    .catch((err) => done(err));
+});
+
+describe("Testing all books routes", function () {
+  //testing create book
+  it("testing /books/create-book it should successfully create a book", function (done) {
+    //adding a publisher to the database
+    publishersDBController
+      .createPublisher(publisher)
+      //sign in
+      .then(function () {
+        return request(app)
+          .post("/publishers/login")
+          .send({
+            email: publisher.email,
+            account_password: publisher.account_password,
+          })
+          .expect(200);
+      })
+      //sending create book request
+      .then(function (response) {
+        let token = response.token;
+        request(app)
+          .post("/books/create-book")
+          .set("Cookie", ["token=" + token])
+          .send(book)
+          .expect(200, done);
+      })
+      .catch((err) => done(err));
+  });
+
+  //testing get book info
+  it("testing /books/get-books it should successfully return a book", function (done) {
+    //adding a publisher to the database
+    publishersDBController
+      .createPublisher(publisher)
+      //getting the created publisher id
+      .then(function () {
+        return publishersDBController.getPublisher(publisher.email);
+      })
+      //adding books to the database
+      .then(function (response) {
+        let publisher_id = response.data.publisher_id;
+        book.publisher_id = publisher_id;
+        book2.publisher_id = publisher_id;
+        return booksDBController.createBook(book);
+      })
+      .then(function () {
+        return booksDBController.createBook(book2);
+      })
+      //sending get book request
+      .then(function () {
+        return request(app)
+          .get("/books/get-books")
+          .query({ book_name: book.book_name })
+          .expect(200);
+      })
+      .then(function (response) {
+        expect(response.books.length).to.be.equal(1);
+        done();
+      })
+      .catch((err) => done(err));
+  });
+
+  //testing update book
+  it("testing /books/update-book it should successfully update the book", function (done) {
+    let id = "";
+    //adding a publisher to the database
+    publishersDBController
+      .createPublisher(publisher)
+      //getting the created publisher id
+      .then(function () {
+        return publishersDBController.getPublisher(publisher.email);
+      })
+      //adding a book to the database
+      .then(function (response) {
+        let publisher_id = response.data.publisher_id;
+        book.publisher_id = publisher_id;
+        return booksDBController.createBook(book);
+      })
+      //getting the book id
+      .then(function () {
+        return booksDBController.getBooks({ book_name: book.book_name });
+      })
+      //sending login request
+      .then(function (response) {
+        id = response.data.id;
+        return request(app)
+          .post("/publishers/login")
+          .send({
+            email: publisher.email,
+            account_password: publisher.account_password,
+          })
+          .expect(200);
+      })
+      //sending update book request
+      .then(function (response) {
+        let token = response.token;
+        request(app)
+          .patch("/books/update-book")
+          .set("Cookie", ["token=" + token])
+          .send({ id, updateInfo: { book_name: "test3" } })
+          .expect(200, done);
+      })
+      .catch((err) => done(err));
+  });
+
+  //testing delete book
+  it("testing /books/delete-book it should successfully delete the book", function (done) {
+    let id = "";
+    //adding a publisher to the database
+    publishersDBController
+      .createPublisher(publisher)
+      //getting the created publisher id
+      .then(function () {
+        return publishersDBController.getPublisher(publisher.email);
+      })
+      //adding a book to the database
+      .then(function (response) {
+        let publisher_id = response.data.publisher_id;
+        book.publisher_id = publisher_id;
+        return booksDBController.createBook(book);
+      })
+      //getting the book id
+      .then(function () {
+        return booksDBController.getBooks({ book_name: book.book_name });
+      })
+      //sending login request
+      .then(function (response) {
+        id = response.data.id;
+        return request(app)
+          .post("/publishers/login")
+          .send({
+            email: publisher.email,
+            account_password: publisher.account_password,
+          })
+          .expect(200);
+      })
+      //sending delete book request
+      .then(function (response) {
+        let token = response.token;
+        request(app)
+          .delete("/books/delete-book")
+          .set("Cookie", ["token=" + token])
+          .send({ id })
+          .expect(200, done);
+      })
+      .catch((err) => done(err));
+  });
+});

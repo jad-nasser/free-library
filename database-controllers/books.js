@@ -26,13 +26,18 @@ exports.getBooks = (info) => {
     queryText = queryText + objectKey + " = @" + objectKey + " ";
     if (i !== objectKeys.length - 1) queryText = queryText + "AND ";
   }
-  return request.query(queryText);
+  return request.query(queryText).then((response) => {
+    let dataObject = {};
+    dataObject.data = response.recordsets[0];
+    return dataObject;
+  });
 };
 
 //update a book in the database
-exports.updateBook = (id, updateInfo) => {
+exports.updateBook = (id, publisher_id, updateInfo) => {
   const request = new mssql.Request();
   request.input("id", id);
+  request.input("publisher_id", publisher_id);
   let queryText = "UPDATE Books SET ";
   //iterating through every property in the updateInfo object to complete the query text
   let objectKeys = Object.keys(updateInfo);
@@ -43,15 +48,18 @@ exports.updateBook = (id, updateInfo) => {
     if (i !== objectKeys.length - 1) queryText = queryText + ",";
     queryText = queryText + " ";
   }
-  queryText = queryText + "WHERE id = @id";
+  queryText = queryText + "WHERE id = @id AND publisher_id = @publisher_id";
   return request.query(queryText);
 };
 
 //delete a book in the database
-exports.deleteBook = (id) => {
+exports.deleteBook = (id, publisher_id) => {
   const request = new mssql.Request();
   request.input("id", id);
-  return request.query("DELETE FROM Books WHERE id = @id");
+  request.input("publisher_id", publisher_id);
+  return request.query(
+    "DELETE FROM Books WHERE id = @id AND publisher_id = @publisher_id"
+  );
 };
 
 //delete all books for a specific publisher in the database
@@ -59,4 +67,10 @@ exports.deleteAllPublisherBooks = (publisher_id) => {
   const request = new mssql.Request();
   request.input("publisher_id", publisher_id);
   return request.query("DELETE FROM Books WHERE publisher_id = @publisher_id");
+};
+
+//delete all rows in the table
+exports.clearTable = () => {
+  const request = new mssql.Request();
+  return request.query("DELETE FROM Books");
 };
