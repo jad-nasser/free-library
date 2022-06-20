@@ -35,6 +35,11 @@ const response = {
   },
 };
 
+//removing all stubs after each test
+afterEach(function () {
+  sinon.restore();
+});
+
 describe("testing books controller", function () {
   //create a book
   describe("testing createBook()", function () {
@@ -135,6 +140,7 @@ describe("testing books controller", function () {
           done(err);
         });
     });
+
     //testing updateBook() when no update info is provided in the request
     it("Should send 404 response with a message 'No update info are provided'", function (done) {
       //creating mock request and response
@@ -154,6 +160,7 @@ describe("testing books controller", function () {
           done(err);
         });
     });
+
     //testing updateBook() when everything is done correctly
     it("Should send 200 response with a message 'The book is successfully updated'", function (done) {
       //creating mock request and response
@@ -209,10 +216,16 @@ describe("testing books controller", function () {
       let req = Object.assign({}, request);
       req.body.id = "1";
       let res = Object.assign({}, response);
-      //mocking the database controller method deleteBook()
+      //mocking the database controller method deleteBook() and getBooks() and file sytem method fs.unlink()
       let deleteBookStub = sinon.stub().returns(Promise.resolve(true));
+      let getBooksStub = sinon.stub().returns(Promise.resolve([]));
+      let unlinkStub = sinon.stub().returns(Promise.resolve(true));
       let controller = proxyquire("../../controllers/books", {
-        "../database-controllers/books": { deleteBook: deleteBookStub },
+        "../database-controllers/books": {
+          deleteBook: deleteBookStub,
+          getBooks: getBooksStub,
+        },
+        fs: { unlink: unlinkStub },
       });
       //calling the function
       controller
@@ -222,6 +235,8 @@ describe("testing books controller", function () {
           expect(res.statusCode).to.be.equal(200);
           expect(res.data).to.be.equal("The book is successfully deleted");
           expect(deleteBookStub.calledOnce).to.be.true;
+          expect(getBooksStub.calledOnce).to.be.true;
+          expect(unlinkStub.calledOnce).to.be.true;
           done();
         })
         .catch(function (err) {

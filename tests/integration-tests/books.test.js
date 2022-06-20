@@ -5,14 +5,15 @@ const publishersDBController = require("../../database-controllers/publishers");
 const booksDBController = require("../../database-controllers/books");
 const request = require("supertest");
 const { expect } = require("chai");
+const bcrypt = require("bcrypt");
 
 //test data
 let publisher = {
   first_name: "test",
   last_name: "test",
   email: "testtest@email.com",
-  account_password: "Q1!asdfg",
 };
+let publisher_password = "Q1!asdfg";
 let book = {
   book_name: "test",
   author: "test",
@@ -27,13 +28,26 @@ let book2 = {
 //connecting to the database
 const connection = connectToDB("free-library-test");
 
+before(function (done) {
+  bcrypt
+    .hash(publisher_password, 10)
+    .then(function (hashedPassword) {
+      publisher.account_password = hashedPassword;
+      done();
+    })
+    .catch(function (err) {
+      done(err);
+    });
+});
 after(function (done) {
   connection
     .close()
     .then(function () {
       done();
     })
-    .catch((err) => done(err));
+    .catch(function (err) {
+      done(err);
+    });
 });
 afterEach(function (done) {
   publishersDBController
@@ -44,7 +58,9 @@ afterEach(function (done) {
     .then(function () {
       done();
     })
-    .catch((err) => done(err));
+    .catch(function (err) {
+      done(err);
+    });
 });
 
 describe("Testing all books routes", function () {
@@ -59,7 +75,7 @@ describe("Testing all books routes", function () {
           .post("/publishers/login")
           .send({
             email: publisher.email,
-            account_password: publisher.account_password,
+            account_password: publisher_password,
           })
           .expect(200);
       })
@@ -72,7 +88,9 @@ describe("Testing all books routes", function () {
           .send(book)
           .expect(200, done);
       })
-      .catch((err) => done(err));
+      .catch(function (err) {
+        done(err);
+      });
   });
 
   //testing get book info
@@ -105,7 +123,9 @@ describe("Testing all books routes", function () {
         expect(response.books.length).to.be.equal(1);
         done();
       })
-      .catch((err) => done(err));
+      .catch(function (err) {
+        done(err);
+      });
   });
 
   //testing update book
@@ -135,7 +155,7 @@ describe("Testing all books routes", function () {
           .post("/publishers/login")
           .send({
             email: publisher.email,
-            account_password: publisher.account_password,
+            account_password: publisher_password,
           })
           .expect(200);
       })
@@ -148,7 +168,9 @@ describe("Testing all books routes", function () {
           .send({ id, updateInfo: { book_name: "test3" } })
           .expect(200, done);
       })
-      .catch((err) => done(err));
+      .catch(function (err) {
+        done(err);
+      });
   });
 
   //testing delete book
@@ -178,7 +200,7 @@ describe("Testing all books routes", function () {
           .post("/publishers/login")
           .send({
             email: publisher.email,
-            account_password: publisher.account_password,
+            account_password: publisher_password,
           })
           .expect(200);
       })
@@ -191,6 +213,8 @@ describe("Testing all books routes", function () {
           .send({ id })
           .expect(200, done);
       })
-      .catch((err) => done(err));
+      .catch(function (err) {
+        done(err);
+      });
   });
 });

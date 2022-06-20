@@ -21,9 +21,8 @@ exports.getPublisher = (email) => {
   return request
     .query("SELECT * FROM Publishers WHERE email = @email")
     .then((response) => {
-      let dataObject = {};
-      dataObject.data = response.recordsets[0];
-      return dataObject;
+      let data = response.recordsets[0];
+      return data;
     });
 };
 

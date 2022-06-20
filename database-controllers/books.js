@@ -27,9 +27,8 @@ exports.getBooks = (info) => {
     if (i !== objectKeys.length - 1) queryText = queryText + "AND ";
   }
   return request.query(queryText).then((response) => {
-    let dataObject = {};
-    dataObject.data = response.recordsets[0];
-    return dataObject;
+    let data = response.recordsets[0];
+    return data;
   });
 };
 

@@ -6,23 +6,36 @@ const request = require("supertest");
 const { expect } = require("chai");
 
 //test data
+let publisher_password = "Q1!asdfg";
 let publisher = {
   first_name: "test",
   last_name: "test",
   email: "testtest@email.com",
-  account_password: "Q1!asdfg",
 };
 
 //connecting to the database
 const connection = connectToDB("free-library-test");
 
+before(function (done) {
+  bcrypt
+    .hash(publisher_password, 10)
+    .then(function (hashedPassword) {
+      publisher.account_password = hashedPassword;
+      done();
+    })
+    .catch(function (err) {
+      done(err);
+    });
+});
 after(function (done) {
   connection
     .close()
     .then(function () {
       done();
     })
-    .catch((err) => done(err));
+    .catch(function (err) {
+      done(err);
+    });
 });
 afterEach(function (done) {
   publishersDBController
@@ -30,15 +43,19 @@ afterEach(function (done) {
     .then(function () {
       done();
     })
-    .catch((err) => done(err));
+    .catch(function (err) {
+      done(err);
+    });
 });
 
 describe("Testing all publisher routes", function () {
   //testing create publisher
   it("testing /publishers/create-publisher it should successfully create a publisher", function (done) {
+    let publisherInfo = Object.assign({}, publisher);
+    publisherInfo.account_password = publisher_password;
     request(app)
       .post("/publishers/create-publisher")
-      .send(publisher)
+      .send(publisherInfo)
       .expect(200, done);
   });
 
@@ -53,7 +70,7 @@ describe("Testing all publisher routes", function () {
           .post("/publishers/login")
           .send({
             email: publisher.email,
-            account_password: publisher.account_password,
+            account_password: publisher_password,
           })
           .expect(200);
       })
@@ -69,7 +86,9 @@ describe("Testing all publisher routes", function () {
         expect(response.publisherInfo).to.be.exist;
         done();
       })
-      .catch((err) => done(err));
+      .catch(function (err) {
+        done(err);
+      });
   });
 
   //testing update publisher
@@ -83,7 +102,7 @@ describe("Testing all publisher routes", function () {
           .post("/publishers/login")
           .send({
             email: publisher.email,
-            account_password: publisher.account_password,
+            account_password: publisher_password,
           })
           .expect(200);
       })
@@ -96,7 +115,9 @@ describe("Testing all publisher routes", function () {
           .send({ first_name: "test2", last_name: "test2" })
           .expect(200, done);
       })
-      .catch((err) => done(err));
+      .catch(function (err) {
+        done(err);
+      });
   });
 
   //testing delete publisher
@@ -110,7 +131,7 @@ describe("Testing all publisher routes", function () {
           .post("/publishers/login")
           .send({
             email: publisher.email,
-            account_password: publisher.account_password,
+            account_password: publisher_password,
           })
           .expect(200);
       })
@@ -122,6 +143,8 @@ describe("Testing all publisher routes", function () {
           .set("Cookie", ["token=" + token])
           .expect(200, done);
       })
-      .catch((err) => done(err));
+      .catch(function (err) {
+        done(err);
+      });
   });
 });

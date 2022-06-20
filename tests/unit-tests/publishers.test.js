@@ -124,14 +124,14 @@ describe("Testing publisher controller", function () {
       //calling the method
       controller
         .createPublisher(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
           expect(res.data).to.be.equal("Email already exists");
           expect(getPublisherStub.calledOnce).to.be.true;
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -156,7 +156,7 @@ describe("Testing publisher controller", function () {
       //calling the method
       controller
         .createPublisher(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(200);
           expect(res.data).to.be.equal("Publisher successfully created");
@@ -164,7 +164,7 @@ describe("Testing publisher controller", function () {
           expect(createPublisherStub.calledOnce).to.be.true;
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -179,13 +179,13 @@ describe("Testing publisher controller", function () {
       //calling the method
       publishersController
         .login(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
           expect(res.data).to.be.equal("Email or password are missing");
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -213,14 +213,14 @@ describe("Testing publisher controller", function () {
       //calling the method
       controller
         .login(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
           expect(res.data).to.be.equal("Email or password are not correct");
           expect(getPublisherStub.calledOnce).to.be.true;
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -246,14 +246,14 @@ describe("Testing publisher controller", function () {
       //calling the method
       controller
         .login(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(200);
           expect(res.data.token).to.be.exist;
           expect(getPublisherStub.calledOnce).to.be.true;
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -267,14 +267,14 @@ describe("Testing publisher controller", function () {
       let res = Object.assign({}, response);
       //calling the method
       publishersController
-        .login(req, res, () => {})
-        .then(() => {
+        .login(req, res, function () {})
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
           expect(res.data).to.be.equal("No token found");
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -287,14 +287,14 @@ describe("Testing publisher controller", function () {
       let res = Object.assign({}, response);
       //calling the method
       publishersController
-        .login(req, res, () => {})
-        .then(() => {
+        .login(req, res, function () {})
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
           expect(res.data).to.be.equal("Not valid token");
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -315,14 +315,14 @@ describe("Testing publisher controller", function () {
       let res = Object.assign({}, response);
       //calling the method
       publishersController
-        .login(req, res, () => {})
-        .then(() => {
+        .login(req, res, function () {})
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(200);
           expect(req.publisher).to.be.exist;
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -347,14 +347,14 @@ describe("Testing publisher controller", function () {
       //calling the method
       controller
         .getPublisherInfo(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(200);
           expect(res.data.publisherInfo).to.be.exist;
           expect(getPublisherStub.calledOnce).to.be.true;
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -370,13 +370,13 @@ describe("Testing publisher controller", function () {
       //calling the method
       publishersController
         .updatePublisher(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
           expect(res.data).to.be.equal("No update info");
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -391,13 +391,13 @@ describe("Testing publisher controller", function () {
       //calling the method
       publishersController
         .updatePublisher(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
           expect(res.data).to.be.equal("Old password not found");
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -415,13 +415,13 @@ describe("Testing publisher controller", function () {
       //calling the method
       publishersController
         .updatePublisher(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
           expect(res.data).to.be.equal("The new password is not valid");
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -448,14 +448,14 @@ describe("Testing publisher controller", function () {
       //calling the method
       controller
         .updatePublisher(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
           expect(res.data).to.be.equal("Old password is not correct");
           expect(getPublisherStub.calledOnce).to.be.true;
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -472,13 +472,13 @@ describe("Testing publisher controller", function () {
       //calling the method
       publishersController
         .updatePublisher(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
           expect(res.data).to.be.equal("The new email is not valid");
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -504,14 +504,14 @@ describe("Testing publisher controller", function () {
       //calling the method
       controller
         .updatePublisher(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
           expect(res.data).to.be.equal("The entered email is already exists");
           expect(getPublisherStub.calledOnce).to.be.true;
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -540,7 +540,7 @@ describe("Testing publisher controller", function () {
       //calling the method
       controller
         .updatePublisher(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(200);
           expect(res.data).to.be.equal("Account successfully updated");
@@ -548,7 +548,7 @@ describe("Testing publisher controller", function () {
           expect(updatePublisherStub.calledOnce).to.be.true;
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
@@ -561,31 +561,35 @@ describe("Testing publisher controller", function () {
       let req = Object.assign({}, request);
       req.publisher = { id: "1", email: publisher.email };
       let res = Object.assign({}, response);
-      //stubbing the database controller methods getPublisher() and updatePublisher()
+      //stubbing the database controller methods deletePublisher() and deleteAllPublisherBooks() and
+      //getBooks()
       let deletePublisherStub = sinon.stub().returns(Promise.resolve(true));
       let deleteAllPublisherBooksStub = sinon
         .stub()
         .returns(Promise.resolve(true));
+      let getBooksStub = sinon.stub().returns(Promise.resolve([]));
       let controller = proxyquire("../../controllers/publishers", {
         "../database-controllers/publishers": {
           deletePublisher: deletePublisherStub,
         },
         "../database-controllers/books": {
           deleteAllPublisherBooks: deleteAllPublisherBooksStub,
+          getBooks: getBooksStub,
         },
       });
       //calling the method
       controller
         .deletePublisher(req, res)
-        .then(() => {
+        .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(200);
           expect(res.data).to.be.equal("Account successfully deleted");
           expect(deletePublisherStub.calledOnce).to.be.true;
           expect(deleteAllPublisherBooksStub.calledOnce).to.be.true;
+          expect(getBooksStub.calledOnce).to.be.true;
           done();
         })
-        .catch((err) => {
+        .catch(function (err) {
           done(err);
         });
     });
