@@ -1,11 +1,12 @@
 //importing modules
 const app = require("../../app");
-const connectToDB = require("../../connect-to-db");
+const { connect } = require("../../connect-to-db");
 const publishersDBController = require("../../database-controllers/publishers");
 const booksDBController = require("../../database-controllers/books");
 const request = require("supertest");
 const { expect } = require("chai");
 const bcrypt = require("bcrypt");
+require("dotenv").config();
 
 //test data
 let publisher = {
@@ -25,14 +26,19 @@ let book2 = {
   file_path: "test2.pdf",
 };
 
-//connecting to the database
-const connection = connectToDB("free-library-test");
+let connection = null;
 
 before(function (done) {
   bcrypt
     .hash(publisher_password, 10)
     .then(function (hashedPassword) {
       publisher.account_password = hashedPassword;
+    })
+    .then(function () {
+      return connect("free-library-test");
+    })
+    .then(function (pool) {
+      connection = pool;
       done();
     })
     .catch(function (err) {
@@ -49,16 +55,17 @@ after(function (done) {
       done(err);
     });
 });
-afterEach(function (done) {
-  publishersDBController
+beforeEach(function (done) {
+  booksDBController
     .clearTable()
     .then(function () {
-      return booksDBController.clearTable();
+      return publishersDBController.clearTable();
     })
     .then(function () {
       done();
     })
     .catch(function (err) {
+      console.log(err);
       done(err);
     });
 });
@@ -66,6 +73,7 @@ afterEach(function (done) {
 describe("Testing all books routes", function () {
   //testing create book
   it("testing /books/create-book it should successfully create a book", function (done) {
+    this.timeout(10000);
     //adding a publisher to the database
     publishersDBController
       .createPublisher(publisher)
@@ -79,16 +87,27 @@ describe("Testing all books routes", function () {
           })
           .expect(200);
       })
+      //getting the token
+      .then((response) => {
+        response.text = JSON.parse(response.text);
+        return response;
+      })
       //sending create book request
       .then(function (response) {
-        let token = response.token;
-        request(app)
+        let token = response.text.token;
+        return request(app)
           .post("/books/create-book")
           .set("Cookie", ["token=" + token])
-          .send(book)
-          .expect(200, done);
+          .field("book_name", book.book_name)
+          .field("author", book.author)
+          .attach("book-file", "./tests/test-files/test1.pdf")
+          .expect(200);
+      })
+      .then(function () {
+        done();
       })
       .catch(function (err) {
+        console.log(err);
         done(err);
       });
   });
@@ -103,8 +122,8 @@ describe("Testing all books routes", function () {
         return publishersDBController.getPublisher(publisher.email);
       })
       //adding books to the database
-      .then(function (response) {
-        let publisher_id = response.data.publisher_id;
+      .then(function (data) {
+        let publisher_id = data[0].id;
         book.publisher_id = publisher_id;
         book2.publisher_id = publisher_id;
         return booksDBController.createBook(book);
@@ -120,7 +139,8 @@ describe("Testing all books routes", function () {
           .expect(200);
       })
       .then(function (response) {
-        expect(response.books.length).to.be.equal(1);
+        response.text = JSON.parse(response.text);
+        expect(response.text.books.length).to.be.equal(1);
         done();
       })
       .catch(function (err) {
@@ -139,8 +159,8 @@ describe("Testing all books routes", function () {
         return publishersDBController.getPublisher(publisher.email);
       })
       //adding a book to the database
-      .then(function (response) {
-        let publisher_id = response.data.publisher_id;
+      .then(function (data) {
+        let publisher_id = data[0].id;
         book.publisher_id = publisher_id;
         return booksDBController.createBook(book);
       })
@@ -149,8 +169,8 @@ describe("Testing all books routes", function () {
         return booksDBController.getBooks({ book_name: book.book_name });
       })
       //sending login request
-      .then(function (response) {
-        id = response.data.id;
+      .then(function (data) {
+        id = data[0].id;
         return request(app)
           .post("/publishers/login")
           .send({
@@ -161,12 +181,16 @@ describe("Testing all books routes", function () {
       })
       //sending update book request
       .then(function (response) {
-        let token = response.token;
-        request(app)
+        response.text = JSON.parse(response.text);
+        let token = response.text.token;
+        return request(app)
           .patch("/books/update-book")
           .set("Cookie", ["token=" + token])
           .send({ id, updateInfo: { book_name: "test3" } })
-          .expect(200, done);
+          .expect(200);
+      })
+      .then(function () {
+        done();
       })
       .catch(function (err) {
         done(err);
@@ -184,8 +208,8 @@ describe("Testing all books routes", function () {
         return publishersDBController.getPublisher(publisher.email);
       })
       //adding a book to the database
-      .then(function (response) {
-        let publisher_id = response.data.publisher_id;
+      .then(function (data) {
+        let publisher_id = data[0].id;
         book.publisher_id = publisher_id;
         return booksDBController.createBook(book);
       })
@@ -194,8 +218,8 @@ describe("Testing all books routes", function () {
         return booksDBController.getBooks({ book_name: book.book_name });
       })
       //sending login request
-      .then(function (response) {
-        id = response.data.id;
+      .then(function (data) {
+        id = data[0].id;
         return request(app)
           .post("/publishers/login")
           .send({
@@ -206,12 +230,16 @@ describe("Testing all books routes", function () {
       })
       //sending delete book request
       .then(function (response) {
-        let token = response.token;
+        response.text = JSON.parse(response.text);
+        let token = response.text.token;
         request(app)
           .delete("/books/delete-book")
           .set("Cookie", ["token=" + token])
           .send({ id })
-          .expect(200, done);
+          .expect(200);
+      })
+      .then(function () {
+        done();
       })
       .catch(function (err) {
         done(err);

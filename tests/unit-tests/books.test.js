@@ -3,17 +3,20 @@ const booksController = require("../../controllers/books");
 const sinon = require("sinon");
 const proxyquire = require("proxyquire");
 const { expect } = require("chai");
+const _ = require("lodash");
 
 //test data
 const book = {
   book_name: "test",
   author: "test",
   file_path: "test.pdf",
+  publisher_id: "1",
 };
 
 //creating mock request and response objects
 const request = {
   body: {},
+  query: {},
   publisher: { id: "1", email: "testtest@email.com" },
 };
 const response = {
@@ -46,8 +49,8 @@ describe("testing books controller", function () {
     //testing when sending empty request
     it('Should send 404 response with a message "Book name not found"', function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
-      let res = Object.assign({}, response);
+      let req = _.cloneDeep(request);
+      let res = _.cloneDeep(response);
       //calling the function
       booksController
         .createBook(req, res)
@@ -65,9 +68,10 @@ describe("testing books controller", function () {
     //testing when every thing is done correctly
     it('Should send 200 response with a message "Book successfully created"', function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.body = book;
-      let res = Object.assign({}, response);
+      req.file = { path: book.file_path };
+      let res = _.cloneDeep(response);
       //mocking the database controller method createBook()
       let createBookStub = sinon.stub().returns(Promise.resolve(true));
       let controller = proxyquire("../../controllers/books", {
@@ -94,13 +98,11 @@ describe("testing books controller", function () {
     //testing getBooks()
     it("Should send 200 response with the book", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
-      req.body.book_name = book.book_name;
-      let res = Object.assign({}, response);
+      let req = _.cloneDeep(request);
+      req.query.book_name = book.book_name;
+      let res = _.cloneDeep(response);
       //mocking the database controller method getBooks()
-      let getBooksStub = sinon
-        .stub()
-        .returns(Promise.resolve({ books: [book] }));
+      let getBooksStub = sinon.stub().returns(Promise.resolve([book]));
       let controller = proxyquire("../../controllers/books", {
         "../database-controllers/books": { getBooks: getBooksStub },
       });
@@ -125,8 +127,8 @@ describe("testing books controller", function () {
     //testing updateBook when the book id is not provided in the request
     it("Should send 404 response with a message 'No book id is provided'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
-      let res = Object.assign({}, response);
+      let req = _.cloneDeep(request);
+      let res = _.cloneDeep(response);
       //calling the function
       booksController
         .updateBook(req, res)
@@ -144,9 +146,9 @@ describe("testing books controller", function () {
     //testing updateBook() when no update info is provided in the request
     it("Should send 404 response with a message 'No update info are provided'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.body.id = "1";
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //calling the function
       booksController
         .updateBook(req, res)
@@ -164,10 +166,10 @@ describe("testing books controller", function () {
     //testing updateBook() when everything is done correctly
     it("Should send 200 response with a message 'The book is successfully updated'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.body.id = "1";
       req.body.updateInfo = { book_name: "test2" };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //mocking the database controller method updateBook()
       let updateBookStub = sinon.stub().returns(Promise.resolve(true));
       let controller = proxyquire("../../controllers/books", {
@@ -194,8 +196,8 @@ describe("testing books controller", function () {
     //testing deleteBook() when no book id is provided in the request
     it("Should send 404 response with a message 'No book id is provided'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
-      let res = Object.assign({}, response);
+      let req = _.cloneDeep(request);
+      let res = _.cloneDeep(response);
       //calling the function
       booksController
         .deleteBook(req, res)
@@ -213,13 +215,15 @@ describe("testing books controller", function () {
     //testing deleteBook() when everything is done correctly
     it("Should send 200 response with a message 'The book is successfully deleted'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.body.id = "1";
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //mocking the database controller method deleteBook() and getBooks() and file sytem method fs.unlink()
       let deleteBookStub = sinon.stub().returns(Promise.resolve(true));
-      let getBooksStub = sinon.stub().returns(Promise.resolve([]));
-      let unlinkStub = sinon.stub().returns(Promise.resolve(true));
+      let getBooksStub = sinon.stub().returns(Promise.resolve([book]));
+      let unlinkStub = sinon.stub().callsFake(function (path, callback) {
+        callback();
+      });
       let controller = proxyquire("../../controllers/books", {
         "../database-controllers/books": {
           deleteBook: deleteBookStub,

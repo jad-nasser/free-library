@@ -23,11 +23,15 @@ This project provides a free library website that contains PDF books. The public
 - **Node js**
 - **Express js**
 - **Microsoft SQL Server**
+- **nodemon**: used to watch for changes and automatically restart the server
 - **mssql**: driver for SQL Server database
+- **msnodesqlv8**: used with mssql for easier connection to the database
+- **Multer**: used to upload books PDF files to the server
 - **bcrypt**: for hashing users passwords
 - **cookie-parser**
 - **dotenv**: for storing some enviroment variables.
 - **Json Web Token**: tokens for user login stored in httpOnly cookies in user's browser.
+- **Lodash**
 - **Mocha**: test framework.
 - **chai**: for tests assertions.
 - **sinon**: used for mocking while unit testing.

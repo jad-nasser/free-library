@@ -4,6 +4,9 @@ const sinon = require("sinon");
 const { expect } = require("chai");
 const publishersController = require("../../controllers/publishers");
 const jwt = require("jsonwebtoken");
+const _ = require("lodash");
+const bcrypt = require("bcrypt");
+require("dotenv").config();
 
 //creating mock request and response objects
 const request = {
@@ -35,6 +38,21 @@ const publisher = {
   email: "testtest@email.com",
   account_password: "1!Qwasdf",
 };
+let publisherHashedPassword = null;
+
+//making hashed test password for the fake publisher
+before(function (done) {
+  bcrypt
+    .hash(publisher.account_password, 10)
+    .then(function (hashedPassword) {
+      publisherHashedPassword = hashedPassword;
+      done();
+    })
+    .catch(function (err) {
+      console.log(err);
+      done(err);
+    });
+});
 
 //removing all stubs after each test
 afterEach(function () {
@@ -45,8 +63,8 @@ describe("Testing publisher controller", function () {
   describe("Testing createPublisher()", function () {
     //testing createPublisher() when sending empty request
     it('Should return 404 response with message "First name not found"', function (done) {
-      let req = Object.assign({}, request);
-      let res = Object.assign({}, response);
+      let req = _.cloneDeep(request);
+      let res = _.cloneDeep(response);
       publishersController
         .createPublisher(req, res)
         .then(function () {
@@ -62,9 +80,9 @@ describe("Testing publisher controller", function () {
     //testing createPublisher() when the email is not valid
     it('Should return 404 response with message "Email not valid"', function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
-      req.body = Object.assign({}, publisher);
-      let res = Object.assign({}, response);
+      let req = _.cloneDeep(request);
+      req.body = _.cloneDeep(publisher);
+      let res = _.cloneDeep(response);
       //adding a not valid email
       req.body.email = "blablabla";
       //calling the method
@@ -84,11 +102,11 @@ describe("Testing publisher controller", function () {
     //testing createPublisher() when the password is not valid
     it('Should return 404 response with message "Password not valid"', function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
-      req.body = Object.assign({}, publisher);
-      let res = Object.assign({}, response);
+      let req = _.cloneDeep(request);
+      req.body = _.cloneDeep(publisher);
+      let res = _.cloneDeep(response);
       //adding a not valid password
-      req.body.password = "blablabla";
+      req.body.account_password = "blablabla";
       //calling the method
       publishersController
         .createPublisher(req, res)
@@ -106,13 +124,13 @@ describe("Testing publisher controller", function () {
     //testing createPublisher() when assuming that the email is already exists
     it('Should return 404 response with message "Email already exists"', function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
-      req.body = Object.assign({}, publisher);
-      let res = Object.assign({}, response);
+      let req = _.cloneDeep(request);
+      req.body = _.cloneDeep(publisher);
+      let res = _.cloneDeep(response);
       //stubbing the database controller method getPublisher()
       let getPublisherStub = sinon.stub().returns(
         new Promise(function (resolve, reject) {
-          let result = { data: [{ email: "testtest@email.com" }] };
+          let result = [{ email: "testtest@email.com" }];
           resolve(result);
         })
       );
@@ -139,13 +157,11 @@ describe("Testing publisher controller", function () {
     //testing createPublisher() when everything is done correctly
     it('Should return 200 response with message "Publisher successfully created"', function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
-      req.body = Object.assign({}, publisher);
-      let res = Object.assign({}, response);
+      let req = _.cloneDeep(request);
+      req.body = _.cloneDeep(publisher);
+      let res = _.cloneDeep(response);
       //stubbing the database controller methods getPublisher() and createPublisher()
-      let getPublisherStub = sinon
-        .stub()
-        .returns(Promise.resolve({ data: [] }));
+      let getPublisherStub = sinon.stub().returns(Promise.resolve([]));
       let createPublisherStub = sinon.stub().returns(Promise.resolve(true));
       let controller = proxyquire("../../controllers/publishers", {
         "../database-controllers/publishers": {
@@ -174,8 +190,8 @@ describe("Testing publisher controller", function () {
     //testing login() when sending empty request
     it('Should return 404 response with message "Email or password are missing"', function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
-      let res = Object.assign({}, response);
+      let req = _.cloneDeep(request);
+      let res = _.cloneDeep(response);
       //calling the method
       publishersController
         .login(req, res)
@@ -193,18 +209,20 @@ describe("Testing publisher controller", function () {
     //testing login() when email or password are not correct
     it("Should return 404 response with message 'Email or password are not correct'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.body = {
         email: publisher.email,
-        accoun_password: publisher.account_password,
+        account_password: publisher.account_password,
       };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //stubbing the database controller method getPublisher()
-      let getPublisherStub = sinon.stub().returns(
-        Promise.resolve({
-          data: [{ email: publisher.email, account_password: "blabla" }],
-        })
-      );
+      let getPublisherStub = sinon
+        .stub()
+        .returns(
+          Promise.resolve([
+            { email: publisher.email, account_password: "blabla" },
+          ])
+        );
       let controller = proxyquire("../../controllers/publishers", {
         "../database-controllers/publishers": {
           getPublisher: getPublisherStub,
@@ -228,16 +246,22 @@ describe("Testing publisher controller", function () {
     //testing login() when everything is done correctly
     it("Should return 200 response with a token", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.body = {
         email: publisher.email,
-        accoun_password: publisher.account_password,
+        account_password: publisher.account_password,
       };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //stubbing the database controller method getPublisher()
-      let getPublisherStub = sinon
-        .stub()
-        .returns(Promise.resolve({ data: [publisher] }));
+      let getPublisherStub = sinon.stub().returns(
+        Promise.resolve([
+          {
+            email: publisher.email,
+            account_password: publisherHashedPassword,
+            id: "1",
+          },
+        ])
+      );
       let controller = proxyquire("../../controllers/publishers", {
         "../database-controllers/publishers": {
           getPublisher: getPublisherStub,
@@ -263,11 +287,11 @@ describe("Testing publisher controller", function () {
     //testing readCookie() with no token
     it("Should return 404 response with message 'No token found'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
-      let res = Object.assign({}, response);
+      let req = _.cloneDeep(request);
+      let res = _.cloneDeep(response);
       //calling the method
       publishersController
-        .login(req, res, function () {})
+        .readCookie(req, res, function () {})
         .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
@@ -282,12 +306,12 @@ describe("Testing publisher controller", function () {
     //testing readCookie() with a not valid token
     it("Should return 404 response with message 'Not valid token'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.cookies = { token: "not valid" };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //calling the method
       publishersController
-        .login(req, res, function () {})
+        .readCookie(req, res, function () {})
         .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(404);
@@ -310,12 +334,12 @@ describe("Testing publisher controller", function () {
         }
       );
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.cookies = { token };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //calling the method
       publishersController
-        .login(req, res, function () {})
+        .readCookie(req, res, function () {})
         .then(function () {
           //assertion
           expect(res.statusCode).to.be.equal(200);
@@ -332,13 +356,13 @@ describe("Testing publisher controller", function () {
     //testing getPublisherInfo()
     it("Should return 200 response with publisherInfo", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.publisher = { id: "1", email: publisher.email };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //stubbing the database controller method getPublisher()
       let getPublisherStub = sinon
         .stub()
-        .returns(Promise.resolve({ data: [publisher] }));
+        .returns(Promise.resolve([_.cloneDeep(publisher)]));
       let controller = proxyquire("../../controllers/publishers", {
         "../database-controllers/publishers": {
           getPublisher: getPublisherStub,
@@ -364,9 +388,9 @@ describe("Testing publisher controller", function () {
     //testing updatePublisher() when sending request with empty update info
     it("Should return 404 response with message 'No update info'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.publisher = { id: "1", email: publisher.email };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //calling the method
       publishersController
         .updatePublisher(req, res)
@@ -384,10 +408,10 @@ describe("Testing publisher controller", function () {
     //testing updatePublisher() when sending new_password without old_password
     it("Should return 404 response with a message 'Old password not found'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.body.updateInfo = { new_password: "1!Qwasdf" };
       req.publisher = { id: "1", email: publisher.email };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //calling the method
       publishersController
         .updatePublisher(req, res)
@@ -405,13 +429,13 @@ describe("Testing publisher controller", function () {
     //testing updatePublisher() when sending new_password that is not valid
     it("Should return 404 response with a message 'The new password is not valid'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.body.updateInfo = {
         old_password: "1!Qwasdf",
         new_password: "blabla",
       };
       req.publisher = { id: "1", email: publisher.email };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //calling the method
       publishersController
         .updatePublisher(req, res)
@@ -429,17 +453,23 @@ describe("Testing publisher controller", function () {
     //testing updatePublisher() when sending old_password that is not equal to the current password
     it("Should return 404 response with a message 'Old password is not correct'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.body.updateInfo = {
         old_password: "2!Qwasdf",
         new_password: "3!Qwasdf",
       };
       req.publisher = { id: "1", email: publisher.email };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //stubbing the database controller method getPublisher()
-      let getPublisherStub = sinon
-        .stub()
-        .returns(Promise.resolve({ data: [publisher] }));
+      let getPublisherStub = sinon.stub().returns(
+        Promise.resolve([
+          {
+            email: publisher.email,
+            id: "1",
+            account_password: publisherHashedPassword,
+          },
+        ])
+      );
       let controller = proxyquire("../../controllers/publishers", {
         "../database-controllers/publishers": {
           getPublisher: getPublisherStub,
@@ -463,12 +493,12 @@ describe("Testing publisher controller", function () {
     //testing updatePublisher() when sending a not valid email
     it("Should return 404 response with a message 'The new email is not valid'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.body.updateInfo = {
         email: "blabla",
       };
       req.publisher = { id: "1", email: publisher.email };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //calling the method
       publishersController
         .updatePublisher(req, res)
@@ -486,16 +516,16 @@ describe("Testing publisher controller", function () {
     //testing updatePublisher() when sending an already existing email
     it("Should return 404 response with a message 'The entered email is already exists'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.body.updateInfo = {
         email: "test@email.com",
       };
       req.publisher = { id: "1", email: publisher.email };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //stubbing the database controller method getPublisher()
       let getPublisherStub = sinon
         .stub()
-        .returns(Promise.resolve({ data: [{ email: "test@email.com" }] }));
+        .returns(Promise.resolve([{ email: "test@email.com" }]));
       let controller = proxyquire("../../controllers/publishers", {
         "../database-controllers/publishers": {
           getPublisher: getPublisherStub,
@@ -519,17 +549,23 @@ describe("Testing publisher controller", function () {
     //testing updatePublisher() when everything is done correctly
     it("Should return 200 response with a message 'Account successfully updated'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.body.updateInfo = {
         old_password: publisher.account_password,
         new_password: "3!Qwasdf",
       };
       req.publisher = { id: "1", email: publisher.email };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //stubbing the database controller methods getPublisher() and updatePublisher()
-      let getPublisherStub = sinon
-        .stub()
-        .returns(Promise.resolve({ data: [publisher] }));
+      let getPublisherStub = sinon.stub().returns(
+        Promise.resolve([
+          {
+            email: publisher.email,
+            id: "1",
+            account_password: publisherHashedPassword,
+          },
+        ])
+      );
       let updatePublisherStub = sinon.stub().returns(Promise.resolve(true));
       let controller = proxyquire("../../controllers/publishers", {
         "../database-controllers/publishers": {
@@ -558,9 +594,9 @@ describe("Testing publisher controller", function () {
     //testing deletePublisher()
     it("Should return 200 response with a message 'Account successfully deleted'", function (done) {
       //creating mock request and response
-      let req = Object.assign({}, request);
+      let req = _.cloneDeep(request);
       req.publisher = { id: "1", email: publisher.email };
-      let res = Object.assign({}, response);
+      let res = _.cloneDeep(response);
       //stubbing the database controller methods deletePublisher() and deleteAllPublisherBooks() and
       //getBooks()
       let deletePublisherStub = sinon.stub().returns(Promise.resolve(true));

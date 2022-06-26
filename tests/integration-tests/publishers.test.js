@@ -1,9 +1,11 @@
 //importing modules
 const app = require("../../app");
-const connectToDB = require("../../connect-to-db");
+const { connect } = require("../../connect-to-db");
 const publishersDBController = require("../../database-controllers/publishers");
 const request = require("supertest");
 const { expect } = require("chai");
+const bcrypt = require("bcrypt");
+require("dotenv").config();
 
 //test data
 let publisher_password = "Q1!asdfg";
@@ -13,12 +15,14 @@ let publisher = {
   email: "testtest@email.com",
 };
 
-//connecting to the database
-const connection = connectToDB("free-library-test");
+let connection = null;
 
 before(function (done) {
-  bcrypt
-    .hash(publisher_password, 10)
+  connect("free-library-test")
+    .then(function (pool) {
+      connection = pool;
+      return bcrypt.hash(publisher_password, 10);
+    })
     .then(function (hashedPassword) {
       publisher.account_password = hashedPassword;
       done();
@@ -37,7 +41,7 @@ after(function (done) {
       done(err);
     });
 });
-afterEach(function (done) {
+beforeEach(function (done) {
   publishersDBController
     .clearTable()
     .then(function () {
@@ -76,14 +80,16 @@ describe("Testing all publisher routes", function () {
       })
       //sending get publisher request
       .then(function (response) {
-        let token = response.token;
+        response.text = JSON.parse(response.text);
+        let token = response.text.token;
         return request(app)
           .get("/publishers/get-publisher-info")
           .set("Cookie", ["token=" + token])
           .expect(200);
       })
       .then(function (response) {
-        expect(response.publisherInfo).to.be.exist;
+        response.text = JSON.parse(response.text);
+        expect(response.text.publisherInfo).to.be.exist;
         done();
       })
       .catch(function (err) {
@@ -108,12 +114,16 @@ describe("Testing all publisher routes", function () {
       })
       //sending update publisher request
       .then(function (response) {
-        let token = response.token;
+        response.text = JSON.parse(response.text);
+        let token = response.text.token;
         request(app)
           .patch("/publishers/update-publisher")
           .set("Cookie", ["token=" + token])
           .send({ first_name: "test2", last_name: "test2" })
-          .expect(200, done);
+          .expect(200);
+      })
+      .then(function () {
+        done();
       })
       .catch(function (err) {
         done(err);
@@ -137,11 +147,15 @@ describe("Testing all publisher routes", function () {
       })
       //sending delete publisher request
       .then(function (response) {
-        let token = response.token;
+        response.text = JSON.parse(response.text);
+        let token = response.text.token;
         request(app)
           .delete("/publishers/delete-publisher")
           .set("Cookie", ["token=" + token])
-          .expect(200, done);
+          .expect(200);
+      })
+      .then(function () {
+        done();
       })
       .catch(function (err) {
         done(err);

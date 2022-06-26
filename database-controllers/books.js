@@ -1,8 +1,9 @@
 const mssql = require("mssql/msnodesqlv8");
+const { getCurrentPool } = require("../connect-to-db");
 
 //create a book in the database
 exports.createBook = (info) => {
-  const request = new mssql.Request();
+  const request = new mssql.Request(getCurrentPool());
   request.input("book_name", info.book_name);
   request.input("author", info.author);
   request.input("file_path", info.file_path);
@@ -15,7 +16,7 @@ exports.createBook = (info) => {
 
 //get books from the database
 exports.getBooks = (info) => {
-  const request = new mssql.Request();
+  const request = new mssql.Request(getCurrentPool());
   let queryText = "SELECT * FROM Books ";
   //iterating through every property in the info object to complete the query text
   let objectKeys = Object.keys(info);
@@ -34,7 +35,7 @@ exports.getBooks = (info) => {
 
 //update a book in the database
 exports.updateBook = (id, publisher_id, updateInfo) => {
-  const request = new mssql.Request();
+  const request = new mssql.Request(getCurrentPool());
   request.input("id", id);
   request.input("publisher_id", publisher_id);
   let queryText = "UPDATE Books SET ";
@@ -53,7 +54,7 @@ exports.updateBook = (id, publisher_id, updateInfo) => {
 
 //delete a book in the database
 exports.deleteBook = (id, publisher_id) => {
-  const request = new mssql.Request();
+  const request = new mssql.Request(getCurrentPool);
   request.input("id", id);
   request.input("publisher_id", publisher_id);
   return request.query(
@@ -63,13 +64,12 @@ exports.deleteBook = (id, publisher_id) => {
 
 //delete all books for a specific publisher in the database
 exports.deleteAllPublisherBooks = (publisher_id) => {
-  const request = new mssql.Request();
+  const request = new mssql.Request(getCurrentPool);
   request.input("publisher_id", publisher_id);
   return request.query("DELETE FROM Books WHERE publisher_id = @publisher_id");
 };
 
 //delete all rows in the table
 exports.clearTable = () => {
-  const request = new mssql.Request();
-  return request.query("DELETE FROM Books");
+  return getCurrentPool().request().query("DELETE FROM Books");
 };

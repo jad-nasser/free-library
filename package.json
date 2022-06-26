@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "integration-testing": "mocha tests/integration-tests --watch"
+    "integration-testing": "mocha tests/integration-tests --watch",
+    "unit-testing": "mocha tests/unit-tests --watch"
   },
   "repository": {
     "type": "git",
@@ -19,11 +20,14 @@
   "homepage": "https://github.com/jad-nasser/free-library#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
     "msnodesqlv8": "^2.4.8",
-    "mssql": "^8.1.2"
+    "mssql": "^8.1.2",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "chai": "^4.3.6",

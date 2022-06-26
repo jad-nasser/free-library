@@ -1,8 +1,9 @@
 const mssql = require("mssql/msnodesqlv8");
+const { getCurrentPool } = require("../connect-to-db");
 
 //create a publisher user in the database
 exports.createPublisher = (info) => {
-  const request = new mssql.Request();
+  const request = new mssql.Request(getCurrentPool());
   request.input("first_name", info.first_name);
   request.input("last_name", info.last_name);
   request.input("email", info.email);
@@ -16,8 +17,8 @@ exports.createPublisher = (info) => {
 
 //get a publisher user from the database
 exports.getPublisher = (email) => {
-  const request = new mssql.Request();
-  request.input("emal", email);
+  const request = new mssql.Request(getCurrentPool());
+  request.input("email", email);
   return request
     .query("SELECT * FROM Publishers WHERE email = @email")
     .then((response) => {
@@ -29,7 +30,7 @@ exports.getPublisher = (email) => {
 //update a publisher in the database
 exports.updatePublisher = (id, updateInfo) => {
   let queryText = "UPDATE Publishers SET ";
-  const request = new mssql.Request();
+  const request = new mssql.Request(getCurrentPool());
   request.input("id", id);
   //iterating through each property in the updateInfo object to create the query text code
   let objectKeys = Object.keys(updateInfo);
@@ -46,13 +47,13 @@ exports.updatePublisher = (id, updateInfo) => {
 
 //delete a publisher from the database
 exports.deletePublisher = (id) => {
-  const request = new mssql.Request();
+  const request = new mssql.Request(getCurrentPool());
   request.input("id", id);
   return request.query("DELETE FROM Publishers WHERE id = @id");
 };
 
 //delete all rows in the table
 exports.clearTable = () => {
-  const request = new mssql.Request();
+  const request = new mssql.Request(getCurrentPool());
   return request.query("DELETE FROM Publishers");
 };

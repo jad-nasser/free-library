@@ -10,22 +10,22 @@ exports.createPublisher = (req, res) => {
   //checking if some info are missing or not valid and gathering the info
   let info = {};
   if (!req.body.first_name)
-    return Promise.reject(res.status(404).send("First name not found"));
+    return Promise.resolve(res.status(404).send("First name not found"));
   info.first_name = req.body.first_name;
   if (!req.body.last_name)
-    return Promise.reject(res.status(404).send("Last name not found"));
+    return Promise.resolve(res.status(404).send("Last name not found"));
   info.last_name = req.body.last_name;
   if (!req.body.account_password)
-    return Promise.reject(res.status(404).send("Password not found"));
+    return Promise.resolve(res.status(404).send("Password not found"));
   let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])/;
   if (!passwordRegex.test(req.body.account_password))
-    return Promise.reject(res.status(404).send("Password not valid"));
+    return Promise.resolve(res.status(404).send("Password not valid"));
   info.account_password = req.body.account_password;
   if (!req.body.email)
-    return Promise.reject(res.status(404).send("Email not found"));
+    return Promise.resolve(res.status(404).send("Email not found"));
   let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   if (!emailRegex.test(req.body.email))
-    return Promise.reject(res.status(404).send("Email not valid"));
+    return Promise.resolve(res.status(404).send("Email not valid"));
 
   return (
     //checking if an email is already exists
@@ -48,9 +48,8 @@ exports.createPublisher = (req, res) => {
         Promise.resolve(res.status(200).send("Publisher successfully created"))
       )
       .catch((err) => {
-        if (err === "Email already exists")
-          return Promise.reject(res.status(404).send(err));
-        return Promise.reject(res.status(500).json(err));
+        if (err === "Email already exists") return res.status(404).send(err);
+        return res.status(500).json(err);
       })
   );
 };
@@ -62,7 +61,7 @@ exports.login = (req, res) => {
   let id = null;
   //checking if any inputs are missing
   if (!req.body.email || !req.body.account_password)
-    return Promise.reject(
+    return Promise.resolve(
       res.status(404).send("Email or password are missing")
     );
 
@@ -100,8 +99,8 @@ exports.login = (req, res) => {
       })
       .catch((err) => {
         if (err === "Email or password are not correct")
-          return Promise.reject(res.status(404).send(err));
-        return Promise.reject(res.status(500).json(err));
+          return res.status(404).send(err);
+        return res.status(500).json(err);
       })
   );
 };
@@ -111,16 +110,16 @@ exports.login = (req, res) => {
 //this is middleware for reading the token from the cookie, if there is no token or the token is not valid,
 //this middleware will block the next process
 exports.readCookie = (req, res, next) => {
-  if (!req.body.cookies || !req.body.cookies.token)
-    return Promise.reject(res.status(404).send("No token found"));
+  if (!req.cookies || !req.cookies.token)
+    return Promise.resolve(res.status(404).send("No token found"));
   return new Promise((resolve, reject) => {
     jwt.verify(
-      req.body.cookies.token,
+      req.cookies.token,
       process.env.TOKEN_SECRET,
       (err, publisher) => {
-        if (err) reject(res.status(404).send("Not valid token"));
+        if (err) resolve(res.status(404).send("Not valid token"));
         else {
-          req.body.publisher = publisher;
+          req.publisher = publisher;
           next();
           resolve(true);
         }
@@ -141,7 +140,7 @@ exports.getPublisherInfo = (req, res) => {
       delete info.account_password;
       return res.status(200).json({ publisherInfo: info });
     })
-    .catch((err) => Promise.reject(res.status(500).json(err)));
+    .catch((err) => res.status(500).json(err));
 };
 
 //--------------------------------------------------------------------------------------------
@@ -151,7 +150,7 @@ exports.updatePublisher = (req, res) => {
   //gathering the update info
   let info = {};
   if (!req.body.updateInfo)
-    return Promise.reject(res.status(404).send("No update info"));
+    return Promise.resolve(res.status(404).send("No update info"));
   if (req.body.updateInfo.first_name)
     info.first_name = req.body.updateInfo.first_name;
   if (req.body.updateInfo.last_name)
@@ -159,21 +158,23 @@ exports.updatePublisher = (req, res) => {
   if (req.body.updateInfo.email) {
     let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (!emailRegex.test(req.body.updateInfo.email))
-      return Promise.reject(res.status(404).send("The new email is not valid"));
+      return Promise.resolve(
+        res.status(404).send("The new email is not valid")
+      );
     info.email = req.body.updateInfo.email;
   }
   if (req.body.updateInfo.new_password) {
     if (!req.body.updateInfo.old_password)
-      return Promise.reject(res.status(404).send("Old password not found"));
+      return Promise.resolve(res.status(404).send("Old password not found"));
     let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])/;
     if (!passwordRegex.test(req.body.updateInfo.new_password))
-      return Promise.reject(
+      return Promise.resolve(
         res.status(404).send("The new password is not valid")
       );
     info.account_password = req.body.updateInfo.new_password;
   }
   if (Object.keys(info).length === 0)
-    return Promise.reject(res.status(404).send("No update info"));
+    return Promise.resolve(res.status(404).send("No update info"));
 
   return (
     new Promise((resolve, reject) => {
@@ -223,8 +224,8 @@ exports.updatePublisher = (req, res) => {
           err === "The entered email is already exists" ||
           err === "Old password is not correct"
         )
-          return Promise.reject(res.status(404).send(err));
-        return Promise.reject(res.status(500).json(err));
+          return res.status(404).send(err);
+        return res.status(500).json(err);
       })
   );
 };
@@ -264,7 +265,7 @@ exports.deletePublisher = (req, res) => {
       })
       .then(() => res.status(200).send("Account successfully deleted"))
       .catch((err) => {
-        return Promise.reject(res.status(500).json(err));
+        return res.status(500).json(err);
       })
   );
 };

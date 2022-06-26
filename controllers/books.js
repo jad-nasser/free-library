@@ -1,30 +1,62 @@
 //importing modules
 const booksDatabaseController = require("../database-controllers/books");
 const fs = require("fs");
+const multer = require("multer");
 
 //publishers should be signed in in order to use these methods but the getBooks() can be used by
-//all the users
-//No need to create the PDF files in the controller because Multer will do that, we only need to delete the
-//old PDF files in case the publisher wants to delete the book or updating the PDF file of the book.
+//all the users.
+//No need to create the PDF files with 'fs' because Multer will do that, we only need to use 'fs' to
+//delete the old PDF files in case the publisher wants to delete the book or updating the
+//PDF file of the book.
+
+//upload book middleware using Multer
+exports.uploadBook = (req, res, next) => {
+  //setting up Multer for uploading books PDF files
+  const storage = multer.diskStorage({
+    filename: (req, file, cb) => {
+      cb(null, Date.now().toString() + file.originalname);
+    },
+    destination: (req, file, cb) => {
+      cb(null, "./uploads");
+    },
+  });
+  const fileFilter = (req, file, cb) => {
+    if (file.mimetype === "application/pdf") cb(null, true);
+    else cb(new Error("The file should be PDF"), false);
+  };
+  const upload = multer({
+    storage,
+    fileFilter,
+    limits: { fileSize: 200 * 1024 * 1024 },
+  }).single("book-file");
+
+  //calling the upload function to upload the PDF file
+  upload(req, res, (err) => {
+    if (err) return res.status(500).json(err);
+    next();
+  });
+};
+
+//--------------------------------------------------------------------------------------------------
 
 //create a book
 exports.createBook = (req, res) => {
   //checking if the inputs are found and gathering them
   let info = { publisher_id: req.publisher.id };
   if (!req.body.book_name)
-    return Promise.reject(res.status(404).send("Book name not found"));
+    return Promise.resolve(res.status(404).send("Book name not found"));
   info.book_name = req.body.book_name;
   if (!req.body.author)
-    return Promise.reject(res.status(404).send("Author name not found"));
+    return Promise.resolve(res.status(404).send("Author name not found"));
   info.author = req.body.author;
-  if (!req.body.file_path)
-    return Promise.reject(res.status(404).send("PDF file not found"));
-  info.file_path = req.body.file_path;
+  if (!req.file)
+    return Promise.resolve(res.status(404).send("PDF file not found"));
+  info.file_path = req.file.path;
   //adding the book to the database
   return booksDatabaseController
     .createBook(info)
     .then(() => res.status(200).send("Book successfully created"))
-    .catch((err) => Promise.reject(res.status(500).json(err)));
+    .catch((err) => res.status(500).json(err));
 };
 
 //-------------------------------------------------------------------------------
@@ -39,7 +71,10 @@ exports.getBooks = (req, res) => {
   //searching the books in the database and returning them
   return booksDatabaseController
     .getBooks(info)
-    .catch((err) => Promise.reject(res.status(500).json(err)));
+    .then((data) => {
+      return res.status(200).json({ books: data });
+    })
+    .catch((err) => res.status(500).json(err));
 };
 
 //-----------------------------------------------------------------------------
@@ -49,16 +84,15 @@ exports.updateBook = (req, res) => {
   //gathering the update info
   let info = {};
   if (!req.body.id)
-    return Promise.reject(res.status(404).send("No book id is provided"));
+    return Promise.resolve(res.status(404).send("No book id is provided"));
   if (!req.body.updateInfo)
-    return Promise.reject(res.status(404).send("No update info are provided"));
+    return Promise.resolve(res.status(404).send("No update info are provided"));
   if (req.body.updateInfo.book_name)
     info.book_name = req.body.updateInfo.book_name;
   if (req.body.updateInfo.author) info.author = req.body.updateInfo.author;
-  if (req.body.updateInfo.file_path)
-    info.file_path = req.body.updateInfo.file_path;
+  if (req.file) info.file_path = req.file.path;
   if (Object.keys(info).length === 0)
-    return Promise.reject(res.status(404).send("No update info are provided"));
+    return Promise.resolve(res.status(404).send("No update info are provided"));
 
   //returning book update promise
   return (
@@ -90,8 +124,8 @@ exports.updateBook = (req, res) => {
       .then(() => res.status(200).send("The book is successfully updated"))
       .catch((err) => {
         if (err === "This book is not exist" || err === "This is not your book")
-          return Promise.reject(res.status(404).send(err));
-        return Promise.reject(res.status(500).json(err));
+          return res.status(404).send(err);
+        return res.status(500).json(err);
       })
   );
 };
@@ -101,7 +135,7 @@ exports.updateBook = (req, res) => {
 //delete a book
 exports.deleteBook = (req, res) => {
   if (!req.body.id)
-    return Promise.reject(res.status(404).send("No book id is provided"));
+    return Promise.resolve(res.status(404).send("No book id is provided"));
   return (
     //getting the book from the database
     booksDatabaseController
@@ -126,8 +160,8 @@ exports.deleteBook = (req, res) => {
       .then(() => res.status(200).send("The book is successfully deleted"))
       .catch((err) => {
         if (err === "This book is not exist" || err === "This is not your book")
-          return Promise.reject(res.status(404).send(err));
-        return Promise.reject(res.status(500).json(err));
+          return res.status(404).send(err);
+        return res.status(500).json(err);
       })
   );
 };
