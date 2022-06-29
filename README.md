@@ -135,8 +135,8 @@ Books are PDF files stored in the server and when the user sign in as publisher,
 - **server.js**: the server file itself.
 - **client**: contains the client side code.
   - **cypress**: contains e2e tests.
-    - **integration**
-      - **e2e-testing.test.js**
+    - **e2e**
+      - **e2e-tests.cy.js**
   - **public**
     - **index.html**: include links to font awesome.
   - **src**
