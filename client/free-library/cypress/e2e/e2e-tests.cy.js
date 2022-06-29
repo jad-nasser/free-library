@@ -65,6 +65,7 @@ it('A user should change the website theme color to blue, search for a book call
 
 it("The created publisher in the first test should sign in and deactivate the account", () => {
   //sign in
+  cy.visit("http://localhost:3000/sign-in");
   cy.get('[placeholder="Email"]').type("testpublisher@email.com");
   cy.get('[placeholder="Password"]').type("Q1!wasdf");
   cy.get('button:contains("Sign In")').click();
