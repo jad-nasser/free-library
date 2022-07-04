@@ -80,6 +80,7 @@ exports.getBooks = (req, res) => {
 //-----------------------------------------------------------------------------
 
 //update a book
+//this can only be done by the publisher
 exports.updateBook = (req, res) => {
   //gathering the update info
   let info = {};
@@ -131,6 +132,34 @@ exports.updateBook = (req, res) => {
 };
 
 //------------------------------------------------------------------------------------------
+
+//download a book
+exports.downloadBook = (req, res) => {
+  let book = null;
+  if (!req.query.id)
+    return Promise.resolve(res.status(404).send("Book id not found"));
+  return (
+    //check if the book exists
+    booksDatabaseController
+      .getBooks({ id: req.query.id })
+      .then((data) => {
+        if (data.length === 0) return Promise.reject("Book not found");
+        book = data[0];
+      })
+      //incrementing the number_of_downloads of that book
+      .then(() => booksDatabaseController.incrementNumberOfDownloads(book.id))
+      //downloading the book pdf file
+      .then(() => {
+        res.download(book.file_path);
+      })
+      .catch((err) => {
+        if (err === "Book not found") return res.status(404).send(err);
+        return res.status(500).json(err);
+      })
+  );
+};
+
+//-------------------------------------------------------------------------------------
 
 //delete a book
 exports.deleteBook = (req, res) => {

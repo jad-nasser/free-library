@@ -25,6 +25,9 @@ router.patch(
   booksController.updateBook
 );
 
+//download a book
+router.get("/download-book", booksController.downloadBook);
+
 //allows the publisher to delete a book
 router.delete(
   "/delete-book",

@@ -107,6 +107,18 @@ exports.login = (req, res) => {
 
 //----------------------------------------------------------------------------------------------------
 
+//sign out
+exports.signOut = (req, res) => {
+  res.cookie("token", "", {
+    secure: false,
+    httpOnly: true,
+    expires: Date.now() - 1 * 1000 * 60 * 60 * 24,
+  });
+  return Promise.resolve(res.status(200).send("Successfully signed out"));
+};
+
+//---------------------------------------------------------------------------------------
+
 //this is middleware for reading the token from the cookie, if there is no token or the token is not valid,
 //this middleware will block the next process
 exports.readCookie = (req, res, next) => {
@@ -129,6 +141,15 @@ exports.readCookie = (req, res, next) => {
 };
 
 //-------------------------------------------------------------------------------------------------
+
+//this funtion will return 200 response contains "true" if its executed
+//this function is only executed after successfull execution of the readCookie middleware in
+//check-login request route
+exports.checkLogin = (req, res) => {
+  return Promise.resolve(res.status(200).send(true));
+};
+
+//---------------------------------------------------------------------------------------------
 
 //getting publisher info without the password, this method can only be requested by the publisher that
 //have that info

@@ -8,6 +8,20 @@ const router = express.Router();
 //sign in route
 router.post("/login", publishersController.login);
 
+//sign out route
+router.delete(
+  "/sign-out",
+  publishersController.readCookie,
+  publishersController.signOut
+);
+
+//check if a publisher is signed in to the system
+router.get(
+  "/check-login",
+  publishersController.readCookie,
+  publishersController.checkLogin
+);
+
 //create publisher account route
 router.post("/create-publisher", publishersController.createPublisher);
 

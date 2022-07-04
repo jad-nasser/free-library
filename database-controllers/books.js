@@ -69,6 +69,15 @@ exports.deleteAllPublisherBooks = (publisher_id) => {
   return request.query("DELETE FROM Books WHERE publisher_id = @publisher_id");
 };
 
+//increment number_of_downloads of a book by one
+exports.incrementNumberOfDownloads = (book_id) => {
+  const request = new mssql.Request(getCurrentPool);
+  request.input("id", book_id);
+  return request.query(
+    "UPDATE Books SET number_of_downloads = number_of_downloads + 1 WHERE id = @id"
+  );
+};
+
 //delete all rows in the table
 exports.clearTable = () => {
   return getCurrentPool().request().query("DELETE FROM Books");
