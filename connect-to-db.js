@@ -66,8 +66,8 @@ exports.connect = function connect(dbName) {
             "author NVARCHAR(50) NOT NULL," +
             "file_path NVARCHAR(100) NOT NULL," +
             "publisher_id INT NOT NULL," +
-            "number_of_downloads INT DEFAULT 0,";
-        (")");
+            "number_of_downloads INT DEFAULT 0," +
+            ")";
         return pool.request().query(queryText);
       })
       //inform the successfull connection to the database

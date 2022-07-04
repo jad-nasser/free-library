@@ -17,6 +17,17 @@ exports.createBook = (info) => {
 //get books from the database
 exports.getBooks = (info) => {
   const request = new mssql.Request(getCurrentPool());
+  //getting sort information
+  let sortColumn = "book_name";
+  let sortWay = "ASC";
+  if (info.sort_by) {
+    if (info.sort_by === "alphabetical-order-reverse") {
+      sortWay = "DESC";
+    } else if (info.sort_by === "most-downloaded") {
+      sortColumn = "number_of_downloads";
+      sortWay = "DESC";
+    }
+  }
   let queryText = "SELECT * FROM Books ";
   //iterating through every property in the info object to complete the query text
   let objectKeys = Object.keys(info);
@@ -27,6 +38,7 @@ exports.getBooks = (info) => {
     queryText = queryText + objectKey + " = @" + objectKey + " ";
     if (i !== objectKeys.length - 1) queryText = queryText + "AND ";
   }
+  queryText = queryText + "ORDER BY " + sortColumn + " " + sortWay + " ";
   return request.query(queryText).then((response) => {
     let data = response.recordsets[0];
     return data;

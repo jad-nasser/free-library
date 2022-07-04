@@ -68,6 +68,7 @@ exports.getBooks = (req, res) => {
   if (req.publisher && req.publisher.id) info.publisher_id = req.publisher.id;
   if (req.query.book_name) info.book_name = req.query.book_name;
   if (req.query.author) info.author = req.query.author;
+  if (req.query.sort_by) info.sort_by = req.query.sort_by;
   //searching the books in the database and returning them
   return booksDatabaseController
     .getBooks(info)
