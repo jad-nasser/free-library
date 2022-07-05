@@ -169,9 +169,8 @@ Books are PDF files stored in the server and when the user sign in as publisher,
         - **Publisher.js**: includes publisher-navbar component and an outlet for publishers pages.
     - **checkLogin.js**: contains a function that used in most component to check if the user is logged in to the system and if a user is not in the correct page type the user will be redirected to another page.
     - **redux**: contains all redux store, actions, and reducer
-      - **themeReducer.js**: reducer for website theme change
+      - **themeSlice.js**: reducer and actions for website theme change
       - **store.js**: the global store of the whole app
-      - **actions.js**: contains actions used when changing the state of the store.
 
 <br>
 <br>
