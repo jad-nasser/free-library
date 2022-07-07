@@ -112,7 +112,7 @@ exports.signOut = (req, res) => {
   res.cookie("token", "", {
     secure: false,
     httpOnly: true,
-    expires: Date.now() - 1 * 1000 * 60 * 60 * 24,
+    expires: new Date(Date.now() - 1 * 1000 * 60 * 60 * 24),
   });
   return Promise.resolve(res.status(200).send("Successfully signed out"));
 };

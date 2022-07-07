@@ -9,11 +9,7 @@ const router = express.Router();
 router.post("/login", publishersController.login);
 
 //sign out route
-router.delete(
-  "/sign-out",
-  publishersController.readCookie,
-  publishersController.signOut
-);
+router.delete("/sign-out", publishersController.signOut);
 
 //check if a publisher is signed in to the system
 router.get(
