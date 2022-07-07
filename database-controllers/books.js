@@ -17,6 +17,7 @@ exports.createBook = (info) => {
 //get books from the database
 exports.getBooks = (info) => {
   const request = new mssql.Request(getCurrentPool());
+  let queryText = "SELECT * FROM Books ";
   //getting sort information
   let sortColumn = "book_name";
   let sortWay = "ASC";
@@ -28,17 +29,39 @@ exports.getBooks = (info) => {
       sortWay = "DESC";
     }
   }
-  let queryText = "SELECT * FROM Books ";
-  //iterating through every property in the info object to complete the query text
-  let objectKeys = Object.keys(info);
-  if (objectKeys.length !== 0) queryText = queryText + "WHERE ";
-  for (let i = 0; i < objectKeys.length; i++) {
-    let objectKey = objectKeys[i];
-    request.input(objectKey, info[objectKey]);
-    queryText = queryText + objectKey + " = @" + objectKey + " ";
-    if (i !== objectKeys.length - 1) queryText = queryText + "AND ";
+  //adding the search query to the query text according to the available info
+  let thereIsFieldBefore = false;
+  if (Object.keys(info).length > 0) queryText = queryText + "WHERE ";
+  if (info.id) {
+    request.input("id", info.id);
+    queryText = queryText + "id = @id ";
+    thereIsFieldBefore = true;
   }
+  if (info.publisher_id) {
+    request.input("publisher_id", info.publisher_id);
+    if (thereIsFieldBefore)
+      queryText = queryText + "AND publisher_id = @publisher_id ";
+    else queryText = queryText + "publisher_id = @publisher_id ";
+    thereIsFieldBefore = true;
+  }
+  if (info.book_name) {
+    let book_name = "%" + info.book_name + "%";
+    request.input("book_name", book_name);
+    if (thereIsFieldBefore)
+      queryText = queryText + "AND book_name LIKE @book_name ";
+    else queryText = queryText + "book_name LIKE @book_name ";
+    thereIsFieldBefore = true;
+  }
+  if (info.author) {
+    let author = "%" + info.author + "%";
+    request.input("author", author);
+    if (thereIsFieldBefore) queryText = queryText + "AND author LIKE @author ";
+    else queryText = queryText + "author LIKE @author ";
+    thereIsFieldBefore = true;
+  }
+  //adding the sort part to the query text
   queryText = queryText + "ORDER BY " + sortColumn + " " + sortWay + " ";
+  //returning the promise
   return request.query(queryText).then((response) => {
     let data = response.recordsets[0];
     return data;

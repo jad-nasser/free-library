@@ -135,7 +135,7 @@ describe("Testing all books routes", function () {
       .then(function () {
         return request(app)
           .get("/books/get-books")
-          .query({ book_name: book.book_name })
+          .query({ book_name: book2.book_name })
           .expect(200);
       })
       .then(function (response) {
