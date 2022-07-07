@@ -2,6 +2,7 @@ import "./App.css";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AccountSettings from "./components/account-settings/AccountSettings";
+import Footer from "./components/footer/Footer";
 
 function App() {
   const themeMode = useSelector((state) => state.theme.mode);
@@ -13,6 +14,7 @@ function App() {
           <Route path="account-settings" element={<AccountSettings />} />
         </Route>
       </Routes>
+      <Footer />
     </div>
   );
 }
