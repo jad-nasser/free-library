@@ -2,8 +2,10 @@ import React, { useRef } from "react";
 import { Link, useNavigate, createSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { changeThemeColor, changeThemeMode } from "../../redux/themeSlice";
+import axios from "axios";
+import checkLogin from "../../checkLogin";
 
-const UserNavbar = () => {
+const PublisherNavbar = () => {
   const themeColor = useSelector((state) => state.theme.color);
   const themeMode = useSelector((state) => state.theme.mode);
   const searchInput = useRef(null);
@@ -29,7 +31,7 @@ const UserNavbar = () => {
     };
     if (params.book_name === "") params = {};
     navigate({
-      pathname: "/home",
+      pathname: "/publisher/home",
       search: createSearchParams(params).toString(),
     });
   };
@@ -41,11 +43,18 @@ const UserNavbar = () => {
   const handleThemeColorChange = (e) => {
     dispatch(changeThemeColor(e.target.value));
   };
+  //handling sign out click
+  const handleSignOutClick = () => {
+    axios
+      .delete(process.env.REACT_APP_BASE_URL + "/publishers/sign-out")
+      .then(() => checkLogin("publisher", navigate))
+      .catch((err) => console.log(err));
+  };
   //the component
   return (
     <nav className={"navbar navbar-expand-lg navbar-dark bg-" + themeColor}>
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/home">
+        <Link className="navbar-brand" to="/publisher/home">
           Free Library
         </Link>
         <button
@@ -119,14 +128,22 @@ const UserNavbar = () => {
               </div>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/advanced-search">
-                Advanced Search
+              <Link className="nav-link" to="/publisher/add-book">
+                Add New Book
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/sign-in">
-                Sign In As Publisher
+              <Link className="nav-link" to="/publisher/account-settings">
+                Account Settings
               </Link>
+            </li>
+            <li className="nav-item">
+              <button
+                className="nav-link btn btn-link"
+                onClick={handleSignOutClick}
+              >
+                Sign Out
+              </button>
             </li>
           </ul>
           <div className="d-flex">
@@ -148,4 +165,4 @@ const UserNavbar = () => {
     </nav>
   );
 };
-export default UserNavbar;
+export default PublisherNavbar;
