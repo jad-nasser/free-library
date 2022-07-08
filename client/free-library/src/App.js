@@ -6,6 +6,7 @@ import Footer from "./components/footer/Footer";
 import User from "./components/route-components/User";
 import Publisher from "./components/route-components/Publisher";
 import AccountInfo from "./components/account-info/AccountInfo";
+import Book from "./components/book/Book";
 
 function App() {
   const themeMode = useSelector((state) => state.theme.mode);
@@ -14,7 +15,10 @@ function App() {
       <div className={"App bg-" + themeMode}>
         <Routes>
           <Route path="*" element={<Navigate to="/" />} />
-          <Route path="/" element={<User />}></Route>
+          <Route path="/" element={<User />}>
+            <Route index element={<Navigate to="home" />} />
+            <Route path="home" element={<Book />} />
+          </Route>
           <Route path="/publisher" element={<Publisher />}>
             <Route path="account-settings" element={<AccountSettingsRoute />}>
               <Route index element={<Navigate to="account-info" />} />
