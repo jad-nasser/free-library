@@ -7,15 +7,17 @@ import axios from "axios";
 //user to other page.
 //this function take the current page type that the user is trying to access and the navigate function
 const checkLogin = (pageType, navigate) => {
-  axios
-    .get(process.env.REACT_APP_BASE_URL + "/publishers/check-login")
-    //the user is signed in as a publisher
-    .then(() => {
-      if (pageType !== "publisher") navigate("/publisher/home");
-    })
-    //the user is not signed in as a publisher
-    .catch(() => {
-      if (pageType !== "default") navigate("/sign-in");
-    });
+  return (
+    axios
+      .get(process.env.REACT_APP_BASE_URL + "/publishers/check-login")
+      //the user is signed in as a publisher
+      .then(() => {
+        if (pageType !== "publisher") navigate("/publisher/home");
+      })
+      //the user is not signed in as a publisher
+      .catch(() => {
+        if (pageType !== "default") navigate("/sign-in");
+      })
+  );
 };
 export default checkLogin;

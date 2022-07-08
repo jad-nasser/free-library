@@ -5,6 +5,7 @@ import AccountSettingsRoute from "./components/route-components/AccountSettingsR
 import Footer from "./components/footer/Footer";
 import User from "./components/route-components/User";
 import Publisher from "./components/route-components/Publisher";
+import AccountInfo from "./components/account-info/AccountInfo";
 
 function App() {
   const themeMode = useSelector((state) => state.theme.mode);
@@ -15,10 +16,10 @@ function App() {
           <Route path="*" element={<Navigate to="/" />} />
           <Route path="/" element={<User />}></Route>
           <Route path="/publisher" element={<Publisher />}>
-            <Route
-              path="account-settings"
-              element={<AccountSettingsRoute />}
-            ></Route>
+            <Route path="account-settings" element={<AccountSettingsRoute />}>
+              <Route index element={<Navigate to="account-info" />} />
+              <Route path="account-info" element={<AccountInfo />} />
+            </Route>
           </Route>
         </Routes>
       </div>
