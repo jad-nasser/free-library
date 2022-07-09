@@ -8,18 +8,22 @@ import Publisher from "./components/route-components/Publisher";
 import AccountInfo from "./components/account-info/AccountInfo";
 import Books from "./components/books/Books";
 import ViewBook from "./components/view-book/ViewBook";
+import SignIn from "./components/sign-in/SignIn";
 
 function App() {
   const themeMode = useSelector((state) => state.theme.mode);
+  let textColor = "dark";
+  if (themeMode === "dark") textColor = "light";
   return (
     <>
-      <div className={"App bg-" + themeMode}>
+      <div className={"App bg-" + themeMode + " text-" + textColor}>
         <Routes>
           <Route path="*" element={<Navigate to="/" />} />
           <Route path="/" element={<User />}>
             <Route index element={<Navigate to="home" />} />
             <Route path="home" element={<Books isPublisher={false} />} />
             <Route path="view-book" element={<ViewBook />} />
+            <Route path="sign-in" element={<SignIn />} />
           </Route>
           <Route path="/publisher" element={<Publisher />}>
             <Route index element={<Navigate to="home" />} />

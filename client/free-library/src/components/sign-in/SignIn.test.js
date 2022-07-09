@@ -28,9 +28,9 @@ const server = setupServer(
   )
 );
 
-before(() => server.listen());
+beforeAll(() => server.listen());
 beforeEach(() => server.resetHandlers());
-after(() => server.close());
+afterAll(() => server.close());
 
 describe("Testing SignIn component", () => {
   //with empty inputs
@@ -42,9 +42,9 @@ describe("Testing SignIn component", () => {
         </BrowserRouter>
       </Provider>
     );
-    fireEvent.click(screen.getByText("Sign In"));
-    expect(screen.getByText("Enter Email")).toBeVisible();
-    expect(screen.getByText("Enter Password")).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "Sign In" }));
+    expect(screen.getByText("Enter email")).toBeVisible();
+    expect(screen.getByText("Enter password")).toBeVisible();
   });
 
   //when server sends an error
@@ -72,7 +72,7 @@ describe("Testing SignIn component", () => {
     fireEvent.change(screen.getByPlaceholderText("Password"), {
       target: { value: "test" },
     });
-    fireEvent.click(screen.getByText("Sign In"));
+    fireEvent.click(screen.getByRole("button", { name: "Sign In" }));
     waitFor(() => screen.getByText("Error: Server error")).then(() => {
       expect(screen.getByText("Error: Server error")).toBeVisible();
     });

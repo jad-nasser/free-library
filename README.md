@@ -163,11 +163,14 @@ Books are PDF files stored in the server and when the user sign in as publisher,
       - **publisher-navbar**: a navbar that it is for the Publishers.
       - **add-book**: allows the publisher to add new book item.
       - **edit-book**: this component will be rendered when a publicher clicks a book component, and this component allows the publisher to edit or delete a book item.
+      - **notification**: represents a notification for success, error, or info
       - **route-components**: includes components that have `<Outlet/>` of react router.
         - **AccountSettingsRoute.js**: includes account-settings component tab and an outlet for the settings.
         - **User.js**: includes user-navbar component and an outlet for Normal users pages.
         - **Publisher.js**: includes publisher-navbar component and an outlet for publishers pages.
-    - **checkLogin.js**: contains a function that used in most component to check if the user is logged in to the system and if a user is not in the correct page type the user will be redirected to another page.
+    - **functions**: includes some functions used by the components
+      - **checkLogin.js**: contains a function that used in most component to check if the user is logged in to the system and if a user is not in the correct page type the user will be redirected to another page.
+      - **getAllSearchParams**: returns all search params in an object.
     - **redux**: contains all redux store, actions, and reducer
       - **themeSlice.js**: reducer and actions for website theme change
       - **store.js**: the global store of the whole app
