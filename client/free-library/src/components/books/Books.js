@@ -12,9 +12,9 @@ const Books = (props) => {
   const themeMode = useSelector((state) => state.theme.mode);
   useEffect(() => {
     //checking if the user is in the correct page type
-    let userType = "default";
-    if (props.isPublisher) userType = "publisher";
-    checkLogin(userType, navigate)
+    let pageType = "default";
+    if (props.isPublisher) pageType = "publisher";
+    checkLogin(pageType, navigate)
       //after checking that the user is in the correct page type, getting the books according to the
       //provided query
       .then(() =>
@@ -27,7 +27,7 @@ const Books = (props) => {
         setBooks(response.data.books);
       })
       .catch((err) => console.log(err));
-  }, [navigate]);
+  }, [navigate, props.isPublisher, searchParams]);
   //the component
   return (
     <div className={"d-flex bg-" + themeMode}>
