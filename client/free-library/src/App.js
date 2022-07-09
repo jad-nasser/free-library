@@ -9,6 +9,7 @@ import AccountInfo from "./components/account-info/AccountInfo";
 import Books from "./components/books/Books";
 import ViewBook from "./components/view-book/ViewBook";
 import SignIn from "./components/sign-in/SignIn";
+import SignUp from "./components/sign-up/SignUp";
 
 function App() {
   const themeMode = useSelector((state) => state.theme.mode);
@@ -24,6 +25,7 @@ function App() {
             <Route path="home" element={<Books isPublisher={false} />} />
             <Route path="view-book" element={<ViewBook />} />
             <Route path="sign-in" element={<SignIn />} />
+            <Route path="sign-up" element={<SignUp />} />
           </Route>
           <Route path="/publisher" element={<Publisher />}>
             <Route index element={<Navigate to="home" />} />
