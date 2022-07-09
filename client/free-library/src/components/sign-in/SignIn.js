@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import checkLogin from "../../functions/checkLogin";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Notification from "../notification/Notification";
 const SignIn = () => {
   const [notificationInfo, setNotificationInfo] = useState(null);
@@ -38,7 +38,7 @@ const SignIn = () => {
       onSubmit={handleFormSubmit}
       noValidate
     >
-      <h3 className="text-center">Sign In</h3>
+      <h3 className="text-center mb-4">Sign In As Publisher</h3>
       <div className="mb-3">
         <label>Email address</label>
         <input
@@ -61,11 +61,17 @@ const SignIn = () => {
         />
         <div className="invalid-feedback">Enter password</div>
       </div>
-      <div className="d-grid mb-4">
+      <div className="d-grid mb-2">
         <button type="submit" className="btn btn-primary">
           Sign In
         </button>
       </div>
+      <p className="mb-3 text-secondary">
+        Not registered yet?{" "}
+        <Link to="/sign-up" className="text-decoration-none">
+          Sign up
+        </Link>
+      </p>
       <Notification notificationInfo={notificationInfo} />
     </form>
   );
