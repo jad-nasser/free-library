@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import checkLogin from "../../checkLogin";
+import checkLogin from "../../functions/checkLogin";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";

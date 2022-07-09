@@ -17,7 +17,7 @@ const Book = (props) => {
   };
   return (
     <div
-      className="card text-center"
+      className="card text-center m-2"
       style={{ maxWidth: "15rem", maxHeight: "15rem", cursor: "pointer" }}
       onClick={handleBookClick}
     >

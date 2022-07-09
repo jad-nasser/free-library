@@ -3,7 +3,7 @@ import { Link, useNavigate, createSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { changeThemeColor, changeThemeMode } from "../../redux/themeSlice";
 import axios from "axios";
-import checkLogin from "../../checkLogin";
+import checkLogin from "../../functions/checkLogin";
 
 const PublisherNavbar = () => {
   const themeColor = useSelector((state) => state.theme.color);
