@@ -14,6 +14,7 @@ import EditName from "./components/edit-name/EditName";
 import EditEmail from "./components/edit-email/EditEmail";
 import EditPassword from "./components/edit-password/EditPassword";
 import DeactivateAccount from "./components/deactivate-account/DeactivateAccount";
+import AddBook from "./components/add-book/AddBook";
 
 function App() {
   const themeMode = useSelector((state) => state.theme.mode);
@@ -34,6 +35,7 @@ function App() {
           <Route path="/publisher" element={<Publisher />}>
             <Route index element={<Navigate to="home" />} />
             <Route path="home" element={<Books isPublisher={true} />} />
+            <Route path="add-book" element={<AddBook />} />
             <Route path="account-settings" element={<AccountSettingsRoute />}>
               <Route index element={<Navigate to="account-info" />} />
               <Route path="account-info" element={<AccountInfo />} />

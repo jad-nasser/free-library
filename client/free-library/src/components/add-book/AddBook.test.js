@@ -8,12 +8,11 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import store from "../../redux/store";
 import AddBook from "./AddBook";
+//importing test file
+import bookFile from "../../test1.pdf";
 
 //mocking scrollIntoView()
 window.HTMLElement.prototype.scrollIntoView = () => {};
-
-//creating a mock PDF file
-let bookFile = new File(["blabla"], "blabla.pdf", { type: "application/pdf" });
 
 //creating a mock server
 const server = setupServer(
@@ -31,9 +30,9 @@ const server = setupServer(
   )
 );
 
-before(() => server.listen());
+beforeAll(() => server.listen());
 beforeEach(() => server.resetHandlers());
-after(() => server.close());
+afterAll(() => server.close());
 
 describe("Testing AddBook component", () => {
   //with empty inputs
