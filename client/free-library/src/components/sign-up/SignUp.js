@@ -52,7 +52,7 @@ const SignUp = () => {
       };
       axios
         .post(
-          process.env.REACT_APP_BASE_URL + "/publishers/sign-up",
+          process.env.REACT_APP_BASE_URL + "/publishers/create-publisher",
           signUpData
         )
         //after successfull sign up

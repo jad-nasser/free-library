@@ -77,7 +77,7 @@ describe("Testing AddBook component", () => {
       target: { value: "test" },
     });
     fireEvent.change(screen.getByTestId("book-file-input"), {
-      target: { required: false, file: bookFile },
+      target: { file: bookFile },
     });
     fireEvent.click(screen.getByText("Add Book"));
     //assertions
