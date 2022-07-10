@@ -12,8 +12,6 @@ import DeactivateAccount from "./DeactivateAccount";
 //mocking scrollIntoView()
 window.HTMLElement.prototype.scrollIntoView = () => {};
 
-//redux store
-
 //creating a mock server
 const server = setupServer(
   rest.delete(
@@ -36,9 +34,9 @@ const server = setupServer(
   )
 );
 
-before(() => server.listen());
+beforeAll(() => server.listen());
 beforeEach(() => server.resetHandlers());
-after(() => server.close());
+afterAll(() => server.close());
 
 describe("Testing DeactivateAccount component", () => {
   //when server sends an error
@@ -46,7 +44,7 @@ describe("Testing DeactivateAccount component", () => {
     //making the mock server sends an error
     server.use(
       rest.patch(
-        process.env.REACT_APP_BASE_URL + "/publishers/update-publisher",
+        process.env.REACT_APP_BASE_URL + "/publishers/delete-publisher",
         (req, res, ctx) => {
           return res(ctx.status(500), ctx.json("Server error"));
         }
@@ -67,7 +65,7 @@ describe("Testing DeactivateAccount component", () => {
     });
   });
 
-  //successfull update
+  //successfull deactivation
   test('Testing the component when everything is correct it should shows "Account successfully deactivated"', () => {
     render(
       <Provider store={store}>
