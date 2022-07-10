@@ -77,33 +77,42 @@ const SignUp = () => {
     >
       <h3 className="text-center mb-4">Sign Up As Publisher</h3>
       <div className="mb-3">
-        <label>First name</label>
+        <label className="form-label" htmlFor="first-name-input">
+          First name
+        </label>
         <input
           type="text"
           className="form-control"
           placeholder="First Name"
+          id="first-name-input"
           ref={firstNameInput}
           required
         />
         <div className="invalid-feedback">Enter your first name</div>
       </div>
       <div className="mb-3">
-        <label>Last name</label>
+        <label className="form-label" htmlFor="last-name-input">
+          Last name
+        </label>
         <input
           type="text"
           className="form-control"
           placeholder="Last Name"
+          id="last-name-input"
           ref={lastNameInput}
           required
         />
         <div className="invalid-feedback">Enter your last name</div>
       </div>
       <div className="mb-3">
-        <label>Email address</label>
+        <label className="form-label" htmlFor="email-input">
+          Email address
+        </label>
         <input
           type="email"
           className="form-control"
           placeholder="Email"
+          id="email-input"
           onChange={handleEmailInputChange}
           ref={emailInput}
           pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
@@ -112,11 +121,14 @@ const SignUp = () => {
         <div className="invalid-feedback">{emailInvalidFeedback}</div>
       </div>
       <div className="mb-3">
-        <label>Password</label>
+        <label className="form-label" htmlFor="password-input">
+          Password
+        </label>
         <input
           type="password"
           className="form-control"
           placeholder="Password"
+          id="password-input"
           onChange={handlePasswordInputChange}
           ref={passwordInput}
           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
@@ -125,11 +137,14 @@ const SignUp = () => {
         <div className="invalid-feedback">{passwordInvalidFeedback}</div>
       </div>
       <div className="mb-4">
-        <label>Confirm password</label>
+        <label className="form-label" htmlFor="confirm-password-input">
+          Confirm password
+        </label>
         <input
           type="password"
           className="form-control"
           placeholder="Confirm Password"
+          id="confirm-password-input"
           ref={confirmPasswordInput}
           required
         />

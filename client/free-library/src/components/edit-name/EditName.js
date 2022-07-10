@@ -48,22 +48,28 @@ const EditName = () => {
     >
       <h3 className="text-center mb-4">Change Your Name</h3>
       <div className="mb-3">
-        <label>New first name</label>
+        <label className="form-label" htmlFor="first-name-input">
+          New first name
+        </label>
         <input
           type="text"
           className="form-control"
           placeholder="New First Name"
+          id="first-name-input"
           ref={firstNameInput}
           required
         />
         <div className="invalid-feedback">Enter new first name</div>
       </div>
       <div className="mb-4">
-        <label>New last name</label>
+        <label className="form-label" htmlFor="last-name-input">
+          New last name
+        </label>
         <input
           type="text"
           className="form-control"
           placeholder="New Last Name"
+          id="last-name-input"
           ref={lastNameInput}
           required
         />

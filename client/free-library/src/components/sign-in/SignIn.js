@@ -40,22 +40,28 @@ const SignIn = () => {
     >
       <h3 className="text-center mb-4">Sign In As Publisher</h3>
       <div className="mb-3">
-        <label>Email address</label>
+        <label className="form-label" htmlFor="email-input">
+          Email address
+        </label>
         <input
           type="email"
           className="form-control"
           placeholder="Email"
+          id="email-input"
           ref={emailInput}
           required
         />
         <div className="invalid-feedback">Enter email</div>
       </div>
       <div className="mb-4">
-        <label>Password</label>
+        <label className="form-label" htmlFor="password-input">
+          Password
+        </label>
         <input
           type="password"
           className="form-control"
           placeholder="Password"
+          id="password-input"
           ref={passwordInput}
           required
         />

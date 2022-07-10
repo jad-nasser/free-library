@@ -56,11 +56,14 @@ const EditEmail = () => {
     >
       <h3 className="text-center mb-4">Change Your Email Address</h3>
       <div className="mb-3">
-        <label>New email address</label>
+        <label className="form-label" htmlFor="email-input">
+          New email address
+        </label>
         <input
           type="email"
           className="form-control"
           placeholder="New Email"
+          id="email-input"
           onChange={handleEmailInputChange}
           ref={emailInput}
           pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"

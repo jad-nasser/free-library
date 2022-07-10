@@ -62,11 +62,14 @@ const EditPassword = () => {
     >
       <h3 className="text-center mb-4">Change Your Password</h3>
       <div className="mb-3">
-        <label>New password</label>
+        <label className="form-label" htmlFor="new-password-input">
+          New password
+        </label>
         <input
           type="password"
           className="form-control"
           placeholder="New Password"
+          id="new-password-input"
           onChange={handlePasswordInputChange}
           ref={passwordInput}
           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
@@ -75,22 +78,28 @@ const EditPassword = () => {
         <div className="invalid-feedback">{passwordInvalidFeedback}</div>
       </div>
       <div className="mb-3">
-        <label>Confirm new password</label>
+        <label className="form-label" htmlFor="confirm-password-input">
+          Confirm new password
+        </label>
         <input
           type="password"
           className="form-control"
           placeholder="Confirm Password"
+          id="confirm-password-input"
           ref={confirmPasswordInput}
           required
         />
         <div className="invalid-feedback">Confirm your password</div>
       </div>
       <div className="mb-4">
-        <label>Old password</label>
+        <label className="form-label" htmlFor="old-password-input">
+          Old password
+        </label>
         <input
           type="password"
           className="form-control"
           placeholder="Old Password"
+          id="old-password-input"
           ref={oldPasswordInput}
           required
         />
