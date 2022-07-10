@@ -10,12 +10,10 @@ const AddBook = () => {
   const authorNameInput = useRef(null);
   const bookFileInput = useRef(null);
   const navigate = useNavigate();
-  /*
   //checking if the user is in the correct page type
   useEffect(() => {
     checkLogin("publisher", navigate);
   }, [navigate]);
-  */
   //handling form submit
   const handleFormSubmit = (e) => {
     e.preventDefault();
