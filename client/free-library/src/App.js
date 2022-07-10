@@ -12,6 +12,7 @@ import SignIn from "./components/sign-in/SignIn";
 import SignUp from "./components/sign-up/SignUp";
 import EditName from "./components/edit-name/EditName";
 import EditEmail from "./components/edit-email/EditEmail";
+import EditPassword from "./components/edit-password/EditPassword";
 
 function App() {
   const themeMode = useSelector((state) => state.theme.mode);
@@ -37,6 +38,7 @@ function App() {
               <Route path="account-info" element={<AccountInfo />} />
               <Route path="change-name" element={<EditName />} />
               <Route path="change-email" element={<EditEmail />} />
+              <Route path="change-password" element={<EditPassword />} />
             </Route>
           </Route>
         </Routes>
