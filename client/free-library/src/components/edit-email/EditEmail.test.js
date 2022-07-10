@@ -28,9 +28,9 @@ const server = setupServer(
   )
 );
 
-before(() => server.listen());
+beforeAll(() => server.listen());
 beforeEach(() => server.resetHandlers());
-after(() => server.close());
+afterAll(() => server.close());
 
 describe("Testing EditEmail component", () => {
   //with empty inputs
