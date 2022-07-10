@@ -10,6 +10,7 @@ import Books from "./components/books/Books";
 import ViewBook from "./components/view-book/ViewBook";
 import SignIn from "./components/sign-in/SignIn";
 import SignUp from "./components/sign-up/SignUp";
+import EditName from "./components/edit-name/EditName";
 
 function App() {
   const themeMode = useSelector((state) => state.theme.mode);
@@ -33,6 +34,7 @@ function App() {
             <Route path="account-settings" element={<AccountSettingsRoute />}>
               <Route index element={<Navigate to="account-info" />} />
               <Route path="account-info" element={<AccountInfo />} />
+              <Route path="change-name" element={<EditName />} />
             </Route>
           </Route>
         </Routes>
