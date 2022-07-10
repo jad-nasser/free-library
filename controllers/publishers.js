@@ -18,7 +18,7 @@ exports.createPublisher = (req, res) => {
   if (!req.body.account_password)
     return Promise.resolve(res.status(404).send("Password not found"));
   let passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   if (!passwordRegex.test(req.body.account_password))
     return Promise.resolve(res.status(404).send("Password not valid"));
   info.account_password = req.body.account_password;
@@ -189,7 +189,7 @@ exports.updatePublisher = (req, res) => {
     if (!req.body.updateInfo.old_password)
       return Promise.resolve(res.status(404).send("Old password not found"));
     let passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(req.body.updateInfo.new_password))
       return Promise.resolve(
         res.status(404).send("The new password is not valid")
