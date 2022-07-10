@@ -56,7 +56,7 @@ describe("Testing EditBook component", () => {
   });
 
   //when clicking 'Delete Book'
-  test("Testing the component when clicking the 'Delete Book' it should shows 'Book successfully deleted'", () => {
+  test("Testing the component when clicking the 'Delete Book' and then select 'Yes' it should shows 'Book successfully deleted'", () => {
     //rendering the component
     render(
       <Provider store={store}>
@@ -66,6 +66,7 @@ describe("Testing EditBook component", () => {
       </Provider>
     );
     fireEvent.click(screen.getByText("Delete Book"));
+    fireEvent.click(screen.getByText("Yes"));
     //assertions
     waitFor(() => screen.getByText("Book successfully deleted")).then(() => {
       expect(screen.getByText("Book successfully deleted")).toBeVisible();

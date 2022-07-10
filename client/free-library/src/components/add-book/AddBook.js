@@ -24,8 +24,8 @@ const AddBook = () => {
       formData.append("author", authorNameInput.current.value);
       formData.append(
         "book-file",
-        bookFileInput.current.file,
-        bookFileInput.current.file.name
+        bookFileInput.current.files[0],
+        bookFileInput.current.files[0].name
       );
       axios
         .post(process.env.REACT_APP_BASE_URL + "/books/create-book", formData)
