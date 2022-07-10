@@ -12,9 +12,6 @@ import EditBook from "./EditBook";
 //mocking scrollIntoView()
 window.HTMLElement.prototype.scrollIntoView = () => {};
 
-//creating a mock book
-const book = { book_name: "test", author: "test", file_path: "blabla.pdf" };
-
 //creating a mock server
 const server = setupServer(
   rest.patch(
@@ -34,25 +31,45 @@ const server = setupServer(
     (req, res, ctx) => {
       return res(ctx.status(200), ctx.json(true));
     }
+  ),
+  rest.get(
+    process.env.REACT_APP_BASE_URL + "/books/get-books",
+    (req, res, ctx) =>
+      res(
+        ctx.status(200),
+        ctx.json({
+          books: [
+            {
+              book_name: "test",
+              author: "test",
+              file_path: "blabla.pdf",
+              id: 10,
+              number_of_downloads: 1111,
+            },
+          ],
+        })
+      )
   )
 );
 
-before(() => server.listen());
+beforeAll(() => server.listen());
 beforeEach(() => server.resetHandlers());
-after(() => server.close());
+afterAll(() => server.close());
 
 describe("Testing EditBook component", () => {
   //with empty inputs
-  test("Testing the component without inserting any input, the 'Update Book' button should be disabled", () => {
+  test("Testing the component without inserting any input, the 'Edit Book' button should be disabled", () => {
     //rendering the component
     render(
       <Provider store={store}>
         <BrowserRouter>
-          <EditBook book={book} />
+          <EditBook />
         </BrowserRouter>
       </Provider>
     );
-    expect(screen.getByText("Update Book")).toBeDisabled();
+    waitFor(() => screen.getByText("Edit Book")).then(() =>
+      expect(screen.getByText("Edit Book")).toBeDisabled()
+    );
   });
 
   //when clicking 'Delete Book'
@@ -61,16 +78,21 @@ describe("Testing EditBook component", () => {
     render(
       <Provider store={store}>
         <BrowserRouter>
-          <EditBook book={book} />
+          <EditBook />
         </BrowserRouter>
       </Provider>
     );
-    fireEvent.click(screen.getByText("Delete Book"));
-    fireEvent.click(screen.getByText("Yes"));
-    //assertions
-    waitFor(() => screen.getByText("Book successfully deleted")).then(() => {
-      expect(screen.getByText("Book successfully deleted")).toBeVisible();
-    });
+    waitFor(() => screen.getByText("Delete Book"))
+      //clicking the buttons to delete the book
+      .then(() => {
+        fireEvent.click(screen.getByText("Delete Book"));
+        fireEvent.click(screen.getByText("Yes"));
+      })
+      //assertions
+      .then(() => waitFor(() => screen.getByText("Book successfully deleted")))
+      .then(() => {
+        expect(screen.getByText("Book successfully deleted")).toBeVisible();
+      });
   });
 
   //when server sends an error
@@ -88,18 +110,23 @@ describe("Testing EditBook component", () => {
     render(
       <Provider store={store}>
         <BrowserRouter>
-          <EditBook book={book} />
+          <EditBook />
         </BrowserRouter>
       </Provider>
     );
-    fireEvent.change(screen.getByPlaceholderText("Change Book Name"), {
-      target: { value: "test2" },
-    });
-    fireEvent.click(screen.getByText("Update Book"));
-    //assertions
-    waitFor(() => screen.getByText("Error: Server error")).then(() => {
-      expect(screen.getByText("Error: Server error")).toBeVisible();
-    });
+    //filling the inputs
+    waitFor(() => screen.getByPlaceholderText("Change Book Name"))
+      .then(() => {
+        fireEvent.change(screen.getByPlaceholderText("Change Book Name"), {
+          target: { value: "test2" },
+        });
+        fireEvent.click(screen.getByText("Edit Book"));
+      })
+      //assertions
+      .then(() => waitFor(() => screen.getByText("Error: Server error")))
+      .then(() => {
+        expect(screen.getByText("Error: Server error")).toBeVisible();
+      });
   });
 
   //successful update
@@ -108,17 +135,22 @@ describe("Testing EditBook component", () => {
     render(
       <Provider store={store}>
         <BrowserRouter>
-          <EditBook book={book} />
+          <EditBook />
         </BrowserRouter>
       </Provider>
     );
-    fireEvent.change(screen.getByPlaceholderText("Change Book Name"), {
-      target: { value: "test2" },
-    });
-    fireEvent.click(screen.getByText("Update Book"));
-    //assertions
-    waitFor(() => screen.getByText("Book successfully updated")).then(() => {
-      expect(screen.getByText("Book successfully updated")).toBeVisible();
-    });
+    //filling the inputs
+    waitFor(() => screen.getByPlaceholderText("Change Book Name"))
+      .then(() => {
+        fireEvent.change(screen.getByPlaceholderText("Change Book Name"), {
+          target: { value: "test2" },
+        });
+        fireEvent.click(screen.getByText("Edit Book"));
+      })
+      //assertions
+      .then(() => waitFor(() => screen.getByText("Book successfully updated")))
+      .then(() => {
+        expect(screen.getByText("Book successfully updated")).toBeVisible();
+      });
   });
 });
