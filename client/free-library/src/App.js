@@ -16,6 +16,7 @@ import EditPassword from "./components/edit-password/EditPassword";
 import DeactivateAccount from "./components/deactivate-account/DeactivateAccount";
 import AddBook from "./components/add-book/AddBook";
 import EditBook from "./components/edit-book/EditBook";
+import AdvancedSearch from "./components/advanced-search/AdvancedSearch";
 
 function App() {
   const themeMode = useSelector((state) => state.theme.mode);
@@ -32,6 +33,7 @@ function App() {
             <Route path="view-book" element={<ViewBook />} />
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
+            <Route path="advanced-search" element={<AdvancedSearch />} />
           </Route>
           <Route path="/publisher" element={<Publisher />}>
             <Route index element={<Navigate to="home" />} />

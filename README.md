@@ -147,6 +147,7 @@ Books are PDF files stored in the server and when the user sign in as publisher,
       - **reducer.js**
       - **actions.js**
     - **components**: includes all the components that the client side main app will use, each component is in a folder and many components comes with .test.js files that are unit tests to this component.
+      - **advanced-search**: advanced search for the user to search for books.
       - **account-settings**: a component that include a tab that navigate the user to a setting the user needs.
       - **account-info**: a component that shows user's account info and can be accessed by account-settings component.
       - **edit-email**: allows the user to edit his/her email and can be accessed by account-settings component.
