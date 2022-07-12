@@ -30,7 +30,7 @@ const AccountSettings = () => {
               <li className="nav-item">
                 <Link
                   className="nav-link"
-                  to="/publisher/account-setting/account-info"
+                  to="/publisher/account-settings/account-info"
                 >
                   Account Info
                 </Link>
@@ -38,7 +38,7 @@ const AccountSettings = () => {
               <li className="nav-item">
                 <Link
                   className="nav-link"
-                  to="/publisher/account-setting/change-name"
+                  to="/publisher/account-settings/change-name"
                 >
                   Change Name
                 </Link>
@@ -46,7 +46,7 @@ const AccountSettings = () => {
               <li className="nav-item">
                 <Link
                   className="nav-link"
-                  to="/publisher/account-setting/change-email"
+                  to="/publisher/account-settings/change-email"
                 >
                   Change Email
                 </Link>
@@ -54,7 +54,7 @@ const AccountSettings = () => {
               <li className="nav-item">
                 <Link
                   className="nav-link"
-                  to="/publisher/account-setting/change-password"
+                  to="/publisher/account-settings/change-password"
                 >
                   Change Password
                 </Link>
@@ -62,7 +62,7 @@ const AccountSettings = () => {
               <li className="nav-item">
                 <Link
                   className="nav-link"
-                  to="/publisher/account-setting/deactivate-account"
+                  to="/publisher/account-settings/deactivate-account"
                 >
                   Deactivate Account
                 </Link>
@@ -76,7 +76,7 @@ const AccountSettings = () => {
 
       <div className="list-group d-none d-md-block">
         <Link
-          to="/publisher/account-setting/account-info"
+          to="/publisher/account-settings/account-info"
           className={
             "list-group-item list-group-item-action list-group-item-" +
             themeMode
@@ -85,7 +85,7 @@ const AccountSettings = () => {
           Account Info
         </Link>
         <Link
-          to="/publisher/account-setting/change-name"
+          to="/publisher/account-settings/change-name"
           className={
             "list-group-item list-group-item-action list-group-item-" +
             themeMode
@@ -94,7 +94,7 @@ const AccountSettings = () => {
           Change Name
         </Link>
         <Link
-          to="/publisher/account-setting/change-email"
+          to="/publisher/account-settings/change-email"
           className={
             "list-group-item list-group-item-action list-group-item-" +
             themeMode
@@ -103,7 +103,7 @@ const AccountSettings = () => {
           Change Email
         </Link>
         <Link
-          to="/publisher/account-setting/change-password"
+          to="/publisher/account-settings/change-password"
           className={
             "list-group-item list-group-item-action list-group-item-" +
             themeMode
@@ -112,7 +112,7 @@ const AccountSettings = () => {
           Change Password
         </Link>
         <Link
-          to="/publisher/account-setting/deactivate-account"
+          to="/publisher/account-settings/deactivate-account"
           className={
             "list-group-item list-group-item-action list-group-item-" +
             themeMode

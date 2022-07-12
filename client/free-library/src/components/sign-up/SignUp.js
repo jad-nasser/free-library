@@ -56,12 +56,13 @@ const SignUp = () => {
           signUpData
         )
         //after successfull sign up
-        .then(() =>
+        .then(() => {
           setNotificationInfo({
             type: "success",
             message: "Account successfully created",
-          })
-        )
+          });
+          navigate("/sign-in");
+        })
         //an error occured
         .catch((err) =>
           setNotificationInfo({ type: "error", message: err.response.data })

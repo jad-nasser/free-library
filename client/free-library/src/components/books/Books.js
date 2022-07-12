@@ -11,14 +11,17 @@ const Books = (props) => {
   const navigate = useNavigate();
   const themeMode = useSelector((state) => state.theme.mode);
   useEffect(() => {
-    //checking if the user is in the correct page type
     let pageType = "default";
-    if (props.isPublisher) pageType = "publisher";
+    let requestUrl = "/books/get-books";
+    if (props.isPublisher) {
+      pageType = "publisher";
+      requestUrl = "/books/get-publisher-books";
+    }
+    //checking if the user is in the correct page type
     checkLogin(pageType, navigate)
-      //after checking that the user is in the correct page type, getting the books according to the
-      //provided query
+      //getting the books
       .then(() =>
-        axios.get(process.env.REACT_APP_BASE_URL + "/books/get-books", {
+        axios.get(process.env.REACT_APP_BASE_URL + requestUrl, {
           params: getAllSearchParams(searchParams),
         })
       )
@@ -30,7 +33,7 @@ const Books = (props) => {
   }, [navigate, props.isPublisher, searchParams]);
   //the component
   return (
-    <div className={"d-flex bg-" + themeMode}>
+    <div className={"d-flex flex-wrap justify-content-center bg-" + themeMode}>
       {books &&
         books.map((book, index) => (
           <Book key={index} isPublisher={props.isPublisher} book={book} />

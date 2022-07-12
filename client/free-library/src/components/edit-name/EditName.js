@@ -17,14 +17,14 @@ const EditName = () => {
     e.preventDefault();
     e.target.classList.add("was-validated");
     if (e.target.checkValidity()) {
-      let updateData = {
+      let updateInfo = {
         first_name: firstNameInput.current.value,
         last_name: lastNameInput.current.value,
       };
       axios
         .patch(
           process.env.REACT_APP_BASE_URL + "/publishers/update-publisher",
-          updateData
+          { updateInfo }
         )
         //after successfull update
         .then(() =>

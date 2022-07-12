@@ -168,7 +168,7 @@ describe("testing books controller", function () {
       //creating mock request and response
       let req = _.cloneDeep(request);
       req.body.id = "1";
-      req.body.updateInfo = { book_name: "test2" };
+      req.body.updateInfo = JSON.stringify({ book_name: "test2" });
       let res = _.cloneDeep(response);
       //mocking the database controller method updateBook()
       let updateBookStub = sinon.stub().returns(Promise.resolve(true));

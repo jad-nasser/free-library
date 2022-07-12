@@ -69,6 +69,7 @@ exports.getBooks = (req, res) => {
   if (req.query.book_name) info.book_name = req.query.book_name;
   if (req.query.author) info.author = req.query.author;
   if (req.query.sort_by) info.sort_by = req.query.sort_by;
+  if (req.query.id) info.id = req.query.id;
   //searching the books in the database and returning them
   return booksDatabaseController
     .getBooks(info)
@@ -89,6 +90,7 @@ exports.updateBook = (req, res) => {
     return Promise.resolve(res.status(404).send("No book id is provided"));
   if (!req.body.updateInfo)
     return Promise.resolve(res.status(404).send("No update info are provided"));
+  req.body.updateInfo = JSON.parse(req.body.updateInfo);
   if (req.body.updateInfo.book_name)
     info.book_name = req.body.updateInfo.book_name;
   if (req.body.updateInfo.author) info.author = req.body.updateInfo.author;

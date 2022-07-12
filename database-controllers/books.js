@@ -89,28 +89,29 @@ exports.updateBook = (id, publisher_id, updateInfo) => {
 
 //delete a book in the database
 exports.deleteBook = (id, publisher_id) => {
-  const request = new mssql.Request(getCurrentPool);
-  request.input("id", id);
-  request.input("publisher_id", publisher_id);
-  return request.query(
-    "DELETE FROM Books WHERE id = @id AND publisher_id = @publisher_id"
-  );
+  return getCurrentPool()
+    .request()
+    .input("id", id)
+    .input("publisher_id", publisher_id)
+    .query("DELETE FROM Books WHERE id = @id AND publisher_id = @publisher_id");
 };
 
 //delete all books for a specific publisher in the database
 exports.deleteAllPublisherBooks = (publisher_id) => {
-  const request = new mssql.Request(getCurrentPool);
-  request.input("publisher_id", publisher_id);
-  return request.query("DELETE FROM Books WHERE publisher_id = @publisher_id");
+  return getCurrentPool()
+    .request()
+    .input("publisher_id", publisher_id)
+    .query("DELETE FROM Books WHERE publisher_id = @publisher_id");
 };
 
 //increment number_of_downloads of a book by one
 exports.incrementNumberOfDownloads = (book_id) => {
-  const request = new mssql.Request(getCurrentPool);
-  request.input("id", book_id);
-  return request.query(
-    "UPDATE Books SET number_of_downloads = number_of_downloads + 1 WHERE id = @id"
-  );
+  return getCurrentPool()
+    .request()
+    .input("id", book_id)
+    .query(
+      "UPDATE Books SET number_of_downloads = number_of_downloads + 1 WHERE id = @id"
+    );
 };
 
 //delete all rows in the table

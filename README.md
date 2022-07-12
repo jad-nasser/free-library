@@ -26,6 +26,7 @@ This project provides a free library website that contains PDF books. The public
 - **nodemon**: used to watch for changes and automatically restart the server
 - **mssql**: driver for SQL Server database
 - **msnodesqlv8**: used with mssql for easier connection to the database
+- **Cors**
 - **Multer**: used to upload books PDF files to the server
 - **bcrypt**: for hashing users passwords
 - **cookie-parser**
@@ -45,6 +46,8 @@ This project provides a free library website that contains PDF books. The public
 - **react-redux**
 - **Bootstrap**
 - **Axios**: for sending requests to the server.
+- **form-data**: for uploading PDF files of the books.
+- **number-abbreviate**: used to abbreviate large book's "number_of_downloads" attribute for better viewing experience.
 - **dotenv**
 - **form-data**: for uploading files from the client side.
 - **React Router**: for managing routing through pages in the react app.

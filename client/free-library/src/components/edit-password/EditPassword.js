@@ -31,14 +31,14 @@ const EditPassword = () => {
     e.preventDefault();
     e.target.classList.add("was-validated");
     if (e.target.checkValidity()) {
-      let updateData = {
+      let updateInfo = {
         new_password: passwordInput.current.value,
         old_password: oldPasswordInput.current.value,
       };
       axios
         .patch(
           process.env.REACT_APP_BASE_URL + "/publishers/update-publisher",
-          updateData
+          { updateInfo }
         )
         //after successfull password change
         .then(() =>

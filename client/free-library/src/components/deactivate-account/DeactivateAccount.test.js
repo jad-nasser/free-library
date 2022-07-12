@@ -27,7 +27,7 @@ const server = setupServer(
     }
   ),
   rest.get(
-    process.env.REACT_APP_BASE_URL + "/publisher/check-login",
+    process.env.REACT_APP_BASE_URL + "/publishers/check-login",
     (req, res, ctx) => {
       return res(ctx.status(200).json(true));
     }

@@ -17,8 +17,10 @@ import DeactivateAccount from "./components/deactivate-account/DeactivateAccount
 import AddBook from "./components/add-book/AddBook";
 import EditBook from "./components/edit-book/EditBook";
 import AdvancedSearch from "./components/advanced-search/AdvancedSearch";
+import axios from "axios";
 
 function App() {
+  axios.defaults.withCredentials = true;
   const themeMode = useSelector((state) => state.theme.mode);
   let textColor = "dark";
   if (themeMode === "dark") textColor = "light";

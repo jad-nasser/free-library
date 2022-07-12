@@ -10,10 +10,10 @@ import { useSelector } from "react-redux";
 const EditBook = () => {
   const [notificationInfo, setNotificationInfo] = useState(null);
   const [book, setBook] = useState(null);
+  const [disabledProperty, setDisabledProperty] = useState(true);
   const bookNameInput = useRef(null);
   const authorNameInput = useRef(null);
   const bookFileInput = useRef(null);
-  const editBookButton = useRef(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const themeMode = useSelector((state) => state.theme.mode);
@@ -35,25 +35,28 @@ const EditBook = () => {
   //handling edit book click
   const handleEditBookClick = () => {
     const formData = new FormData();
+    let updateInfo = {};
     if (bookNameInput.current.value)
-      formData.append("book_name", bookNameInput.current.value);
+      updateInfo.book_name = bookNameInput.current.value;
     if (authorNameInput.current.value)
-      formData.append("author", authorNameInput.current.value);
+      updateInfo.author = authorNameInput.current.value;
     if (bookFileInput.current.files.length > 0)
       formData.append(
         "book-file",
         bookFileInput.current.files[0],
         bookFileInput.current.files[0].name
       );
+    formData.append("updateInfo", JSON.stringify(updateInfo));
+    formData.append("id", book.id);
     axios
       .patch(process.env.REACT_APP_BASE_URL + "/books/update-book", formData)
       //after the book is successfully added
-      .then(() =>
+      .then(() => {
         setNotificationInfo({
           type: "success",
           message: "Book successfully updated",
-        })
-      )
+        });
+      })
       //an error occured
       .catch((err) =>
         setNotificationInfo({ type: "error", message: err.response.data })
@@ -63,14 +66,15 @@ const EditBook = () => {
   const handleYesClick = () => {
     axios
       .delete(process.env.REACT_APP_BASE_URL + "/books/delete-book", {
-        id: book.id,
+        data: { id: book.id },
       })
-      .then(() =>
+      .then(() => {
         setNotificationInfo({
           type: "success",
           message: "Book successfully deleted",
-        })
-      )
+        });
+        navigate("/publisher/home");
+      })
       .catch((err) =>
         setNotificationInfo({ type: "error", message: err.response.data })
       );
@@ -81,9 +85,11 @@ const EditBook = () => {
       bookNameInput.current.value ||
       authorNameInput.current.value ||
       bookFileInput.current.files.length > 0
-    )
-      editBookButton.current.disabled = false;
-    else editBookButton.current.disabled = true;
+    ) {
+      if (disabledProperty) setDisabledProperty(false);
+    } else {
+      if (!disabledProperty) setDisabledProperty(true);
+    }
   };
   //the component
   return (
@@ -182,8 +188,7 @@ const EditBook = () => {
               <button
                 className="btn btn-primary"
                 onClick={handleEditBookClick}
-                ref={editBookButton}
-                disabled
+                disabled={disabledProperty}
               >
                 Edit Book
               </button>

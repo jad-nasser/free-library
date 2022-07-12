@@ -186,7 +186,8 @@ describe("Testing all books routes", function () {
         return request(app)
           .patch("/books/update-book")
           .set("Cookie", ["token=" + token])
-          .send({ id, updateInfo: { book_name: "test3" } })
+          .field("id", id)
+          .field("updateInfo", JSON.stringify({ book_name: "test3" }))
           .expect(200);
       })
       .then(function () {

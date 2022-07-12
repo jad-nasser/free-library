@@ -11,7 +11,7 @@ const app = express();
 //adding middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 //set routers
 app.use("/publishers", publishersRouter);
 app.use("/books", booksRouter);

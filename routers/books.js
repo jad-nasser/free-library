@@ -14,8 +14,15 @@ router.post(
   booksController.createBook
 );
 
-//allows all the users of the website to show books
+//returns books to the users
 router.get("/get-books", booksController.getBooks);
+
+//returns publisher's books
+router.get(
+  "/get-publisher-books",
+  publishersController.readCookie,
+  booksController.getBooks
+);
 
 //allows the publisher to update a book
 router.patch(
