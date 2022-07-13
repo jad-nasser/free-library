@@ -49,14 +49,12 @@ This project provides a free library website that contains PDF books. The public
 - **form-data**: for uploading PDF files of the books.
 - **number-abbreviate**: used to abbreviate large book's "number_of_downloads" attribute for better viewing experience.
 - **dotenv**
-- **form-data**: for uploading files from the client side.
 - **React Router**: for managing routing through pages in the react app.
 - **jest**: test framework.
 - **React Testing Library**: used for unit testing.
 - **Mock Service Worker**: used to mock server responses in unit testing.
 - **Cypress**: used for e2e testing.
 - **cypress-file-upload**: used to upload books PDF files for cypress e2e testing.
-- **Font Awesome**: used to apply some icons to some buttons.
 
 <br>
 <br>
