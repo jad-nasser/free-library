@@ -144,9 +144,6 @@ Books are PDF files stored in the server and when the user sign in as publisher,
     - **App.css**: includes some css styles used in the entire app.
     - **index.js**: the main client side component and it also includes redux store.
     - **App.js**: the second main client side component included in index.js and this component includes all the routes of the client side app.
-    - **reducer**: contains the reducer of the redux store and its actions
-      - **reducer.js**
-      - **actions.js**
     - **components**: includes all the components that the client side main app will use, each component is in a folder and many components comes with .test.js files that are unit tests to this component.
       - **advanced-search**: advanced search for the user to search for books.
       - **account-settings**: a component that include a tab that navigate the user to a setting the user needs.
@@ -191,14 +188,13 @@ Both users and publishers can change the website theme by clicking "Change Theme
 - The first page that appears to the user is the home page, this page allows the user to search books.
 - The user can use the search input in the navbar to search for a specific book in the home page.
 - The user is not requird to enter the book's full name in the search input, because the user can write a substring of the name of the book and the system will find the book.
-- Also the user can search books by clicking the button that contains the configuration icon in the navbar, this will navigate the user to the advanced-search page.
+- Also the user can search books by clicking "Advanced Search" in the navbar, this will navigate the user to the advanced-search page.
 - In the advanced-search page the user can search for books by book's name or by book's author name, and also the user the select to sort books by:
   - Alphabetical order
   - Reverse alphabetical order
-  - Most liked
   - Most downloaded
 - The user can select a book in the home page by clicking it, this will navigate the user to the view-book page for this book.
-- In the view-book page the user can see the details of the book and can download the book by clicking the download button and also the user can like a book by clicking the like button.
+- In the view-book page the user can see the details of the book and can download the book by clicking the download button.
 
 ### **Publisher Guide**
 
@@ -209,7 +205,7 @@ Both users and publishers can change the website theme by clicking "Change Theme
   4. The publisher can sign out by clicking the "Sign Out" button in the navbar
 - In order the users can create a publisher account they need to:
   1. Go to sign in page
-  2. Click the "Sign Up" button in the bottom of the page, this will navigate the user to the sign up page
+  2. Click the "Sign Up" link in the bottom of the page, this will navigate the user to the sign up page
   3. Then the user **should** fill all the inputs and sign up
   4. If sign up not succeeded then maybe there are some inputs missing or the email is not valid or the password not valid or confirm password is the same as the password, and a red text will appear under the inputs telling the user what to do.
   5. After the sign up is completed the user needs to sign in in order to access his/her account.
@@ -221,8 +217,8 @@ Both users and publishers can change the website theme by clicking "Change Theme
 - The edit-book page allows the publisher to edit this book or delete it
 - It is not required by the publisher to fill all the inputs in the edit-book page to edit a book, the publisher can choose the fields that he/she needs to update and left the others blank so the system will only update the fields that the publisher needs to change and the other fields that their inputs are empty will not changed.
 - For the publisher to add new book, in the navbar there is a button named "Add New Book", when the publisher clicks it, the publisher will be navigated to add-book page, then the publisher should fill all the inputs and click the "Add Book" button below.
-- Just Note that in the add-book page, the file input can only accept a PDF file.
-- For the publisher to go to the account-settings page, the publisher should click the button that contains the gear icon in the navbar.
+- The system only accepts PDF files.
+- For the publisher to go to the account-settings page, the publisher should click "Account Settings" in the navbar.
 - In the account-settings page the publisher can select which setting he/she needs by clicking a setting from the box that it is located at the left of the screen, but for small screen size this box will not appear instead a second navbar will appear under the original navbar and this navbar contains a button that have an icon like hamburger, when the publisher clicks this button all the settings will appear and then the publisher can select which setting he/she needs by clicking them.
 - The account settings available are:
   - **Account Info**: allows the publisher to see all the account info except the password.
